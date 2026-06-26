@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Bazar — Unit 1 | Ch 2 | All Sets 1-8</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Syne',sans-serif;background:#f0faf4;min-height:100vh;color:#1c2e24}
+.top-bar{background:#1a7a4a;padding:0.8rem 1.5rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.top-logo{font-size:1.1rem;font-weight:800;color:white}.top-logo span{color:#f9a825}
+.timer-box{background:rgba(255,255,255,0.15);border-radius:8px;padding:0.4rem 1rem;display:flex;align-items:center;gap:6px;font-size:1rem;font-weight:700;color:white}
+.timer-box.danger{background:#dc3545}
+.main{max-width:820px;margin:0 auto;padding:1.5rem 1rem}
+.hub-header{text-align:center;margin-bottom:2rem}
+.hub-header h1{font-family:'Tiro Bangla',serif;font-size:1.8rem;color:#1c2e24}
+.hub-header p{font-family:'Tiro Bangla',serif;font-size:0.95rem;color:#5a7a66;margin-top:0.3rem}
+.set-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem}
+.set-card{background:white;border-radius:14px;padding:1.5rem;border:1.5px solid #c5dccb;transition:all 0.2s;cursor:pointer;color:#1c2e24;box-shadow:0 2px 8px rgba(26,122,74,0.06)}
+.set-card:hover{transform:translateY(-3px);border-color:#1a7a4a;box-shadow:0 6px 20px rgba(26,122,74,0.12)}
+.set-card .icon{font-size:2.2rem;margin-bottom:0.3rem}
+.set-card .set-num{font-weight:700;font-size:1.1rem;color:#1a7a4a}
+.set-card .set-title{font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66;margin:0.2rem 0 0.5rem}
+.set-card .set-meta{display:flex;gap:1rem;font-size:0.7rem;color:#5a7a66}
+.set-card .set-meta span{background:#f0faf4;padding:0.15rem 0.6rem;border-radius:4px}
+.quiz-info{background:white;border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.2rem;border:1px solid #c5dccb;display:flex;gap:1rem;flex-wrap:wrap}
+.info-item{font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66}
+.info-item strong{color:#1a7a4a}
+.progress-wrap{background:#c5dccb;border-radius:4px;height:6px;margin-bottom:1.2rem;overflow:hidden}
+.progress-fill{height:100%;background:#1a7a4a;border-radius:4px;transition:width 0.3s}
+.q-card{background:white;border-radius:14px;padding:1.4rem;margin-bottom:1rem;border:1px solid #c5dccb;box-shadow:0 2px 10px rgba(26,122,74,0.06)}
+.q-num{font-size:0.75rem;font-weight:700;color:#e8730a;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.6rem}
+.q-text{font-family:'Tiro Bangla',serif;font-size:1rem;color:#1c2e24;line-height:1.7;margin-bottom:1.1rem}
+.opts{display:flex;flex-direction:column;gap:0.6rem}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:0.7rem 1rem;border:1.5px solid #c5dccb;border-radius:10px;cursor:pointer;transition:all 0.15s;background:white;text-align:left;width:100%;font-family:inherit}
+.opt:hover:not(.disabled){border-color:#1a7a4a;background:#f0faf4}
+.opt-circle{min-width:28px;height:28px;border-radius:50%;border:1.5px solid #c5dccb;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#5a7a66;flex-shrink:0;transition:all 0.15s}
+.opt-text{font-family:'Tiro Bangla',serif;font-size:0.92rem;color:#1c2e24;line-height:1.6;padding-top:2px}
+.opt.correct{border-color:#1a7a4a;background:#e8f7ef}
+.opt.correct .opt-circle{background:#1a7a4a;border-color:#1a7a4a;color:white}
+.opt.wrong{border-color:#dc3545;background:#fdf0f0}
+.opt.wrong .opt-circle{background:#dc3545;border-color:#dc3545;color:white}
+.opt.disabled{cursor:default}
+.explanation{background:#f0faf4;border-left:3px solid #1a7a4a;border-radius:0 8px 8px 0;padding:0.8rem 1rem;margin-top:0.8rem;display:none}
+.explanation.show{display:block}
+.explanation p{font-family:'Tiro Bangla',serif;font-size:0.88rem;color:#2c4035;line-height:1.7}
+.explanation strong{color:#1a7a4a}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:0.8rem}
+.score-show{font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66}
+.next-btn{background:#1a7a4a;color:white;border:none;padding:0.6rem 1.4rem;border-radius:8px;font-family:'Tiro Bangla',serif;font-size:0.9rem;cursor:pointer;transition:all 0.15s}
+.next-btn:hover{background:#2aad68}
+.next-btn:disabled{background:#c5dccb;cursor:default}
+.result-wrap{background:white;border-radius:14px;padding:2rem;text-align:center;border:1px solid #c5dccb;display:none}
+.result-wrap.show{display:block}
+.result-icon{font-size:3rem;margin-bottom:0.5rem}
+.result-score{font-size:3.5rem;font-weight:800;color:#1a7a4a}
+.result-total{font-size:1rem;color:#5a7a66;margin-bottom:0.5rem;font-family:'Tiro Bangla',serif}
+.result-grade{font-size:1.2rem;font-weight:600;color:#1c2e24;margin-bottom:1.5rem;font-family:'Tiro Bangla',serif}
+.result-bars{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.8rem;margin-bottom:1.5rem}
+.result-bar{background:#f0faf4;border-radius:10px;padding:0.8rem;text-align:center}
+.rb-num{font-size:1.4rem;font-weight:800}
+.rb-label{font-family:'Tiro Bangla',serif;font-size:0.8rem;color:#5a7a66;margin-top:0.2rem}
+.retry-btn{background:#1a7a4a;color:white;border:none;padding:0.75rem 2rem;border-radius:8px;font-family:'Tiro Bangla',serif;font-size:1rem;cursor:pointer;margin-right:0.5rem}
+.review-btn{background:white;color:#1a7a4a;border:1.5px solid #1a7a4a;padding:0.75rem 2rem;border-radius:8px;font-family:'Tiro Bangla',serif;font-size:1rem;cursor:pointer}
+.back-btn{background:white;color:#5a7a66;border:1.5px solid #c5dccb;padding:0.75rem 2rem;border-radius:8px;font-family:'Tiro Bangla',serif;font-size:1rem;cursor:pointer;margin-top:0.6rem}
+.start-wrap{background:white;border-radius:14px;padding:2rem;text-align:center;border:1px solid #c5dccb}
+.start-wrap h2{font-family:'Tiro Bangla',serif;font-size:1.4rem;color:#1c2e24;margin-bottom:0.5rem}
+.start-wrap p{font-family:'Tiro Bangla',serif;font-size:0.9rem;color:#5a7a66;line-height:1.7;margin-bottom:1.2rem}
+.start-info{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-bottom:1.5rem}
+.si{background:#f0faf4;border-radius:10px;padding:0.8rem;text-align:center}
+.si-num{font-size:1.4rem;font-weight:800;color:#1a7a4a}
+.si-label{font-family:'Tiro Bangla',serif;font-size:0.8rem;color:#5a7a66}
+.start-btn{background:#1a7a4a;color:white;border:none;padding:0.85rem 2.5rem;border-radius:10px;font-family:'Tiro Bangla',serif;font-size:1.05rem;cursor:pointer;box-shadow:0 4px 15px rgba(26,122,74,0.3)}
+.start-btn:hover{background:#2aad68}
+.start-btn:disabled{background:#c5dccb;cursor:not-allowed;box-shadow:none}
+.login-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:999;display:none}
+.login-overlay.active{display:flex}
+.login-modal{background:white;border-radius:16px;padding:2.5rem;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.login-modal h2{font-family:'Tiro Bangla',serif;font-size:1.3rem;color:#1c2e24;text-align:center;margin-bottom:0.3rem}
+.login-modal p{font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66;text-align:center;margin-bottom:1.5rem}
+.login-modal label{font-size:0.8rem;font-weight:600;color:#1c2e24;display:block;margin-bottom:0.3rem}
+.login-modal input{width:100%;padding:0.7rem 1rem;border:1.5px solid #c5dccb;border-radius:8px;font-size:0.95rem;margin-bottom:1rem;font-family:'Tiro Bangla',serif}
+.login-modal input:focus{outline:none;border-color:#1a7a4a}
+.login-modal .login-btn{width:100%;background:#1a7a4a;color:white;border:none;padding:0.75rem;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Tiro Bangla',serif}
+.login-modal .login-btn:hover{background:#2aad68}
+.login-modal .login-btn:disabled{background:#c5dccb;cursor:not-allowed}
+.login-modal .error-msg{color:#dc3545;font-size:0.8rem;text-align:center;margin-top:0.5rem;font-family:'Tiro Bangla',serif;display:none}
+.login-modal .limit-info{background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:0.6rem 1rem;margin-bottom:1rem;font-family:'Tiro Bangla',serif;font-size:0.8rem;color:#856404;display:none}
+.login-modal .set-name-display{background:#f0faf4;border-radius:8px;padding:0.5rem;text-align:center;margin-bottom:1rem;font-family:'Tiro Bangla',serif;font-size:0.9rem;color:#1a7a4a;font-weight:600}
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-logo">Test <span>Bazar</span></div>
+  <div class="timer-box" id="timerBox">⏱ <span id="timerDisplay">10:00</span></div>
+</div>
+
+<div class="main">
+
+  <!-- ===== LOGIN OVERLAY ===== -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-modal">
+      <h2>🔐 লগইন করুন</h2>
+      <p>Test শুরু করতে আপনার ইউজারনেম ও পাসওয়ার্ড দিন</p>
+      <div class="set-name-display" id="loginSetName">📚 Set 1</div>
+      <div class="limit-info" id="limitInfo">⚠️ <span id="limitMsg"></span></div>
+      <label>ইউজারনেম</label>
+      <input type="text" id="loginUsername" placeholder="আপনার ইউজারনেম লিখুন">
+      <label>পাসওয়ার্ড</label>
+      <input type="password" id="loginPassword" placeholder="আপনার পাসওয়ার্ড লিখুন" onkeydown="if(event.key==='Enter') doLoginFromSet()">
+      <button class="login-btn" id="loginBtn" onclick="doLoginFromSet()">✅ লগইন করে Test শুরু করো</button>
+      <div class="error-msg" id="loginError">❌ ভুল ইউজারনেম বা পাসওয়ার্ড। আবার চেষ্টা করুন।</div>
+    </div>
+  </div>
+
+  <!-- ===== HUB PAGE ===== -->
+  <div id="hubPage">
+    <div class="hub-header">
+      <h1>📚 Unit 1 — দ্বিতীয় অধ্যায়: ভক্তি ও সুফি আন্দোলন</h1>
+      <p>নিচের সেটগুলো থেকে বেছে নিন। Test শুরু করতে সেটে ক্লিক করুন এবং লগইন করুন।</p>
+      <div id="hubUserInfo" style="font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66;margin-top:0.5rem;"></div>
+    </div>
+    <div class="set-grid" id="setGrid"></div>
+  </div>
+
+  <!-- ===== TEST AREA ===== -->
+  <div id="testArea" class="hidden">
+    <div class="quiz-info">
+      <div class="info-item">🎓 <strong id="testSetName">শিক্ষাবিজ্ঞান</strong> — Unit 1 | Ch 2 | <span id="testSetLabel">Set 1</span></div>
+      <div class="info-item">📝 <span id="testTopic">ভক্তিবাদের পটভূমি ও সূচনা পর্ব</span></div>
+    </div>
+    <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="q-card" id="qCard">
+      <div class="q-num" id="qNum">প্রশ্ন ১ / ১৫</div>
+      <div class="q-text" id="qText"></div>
+      <div class="opts" id="qOpts"></div>
+      <div class="explanation" id="explanation"><p id="explanationText"></p></div>
+      <div class="nav-row">
+        <div class="score-show" id="scoreShow">সঠিক: ০ | ভুল: ০</div>
+        <button class="next-btn" id="nextBtn" onclick="nextQ()" disabled>পরবর্তী →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RESULT AREA ===== -->
+  <div class="result-wrap" id="resultWrap">
+    <div class="result-icon" id="resultIcon"></div>
+    <div class="result-score" id="finalScore"></div>
+    <div class="result-total">/ ১৫</div>
+    <div class="result-grade" id="resultGrade"></div>
+    <div class="result-bars">
+      <div class="result-bar"><div class="rb-num" id="rbCorrect" style="color:#1a7a4a"></div><div class="rb-label">সঠিক</div></div>
+      <div class="result-bar"><div class="rb-num" id="rbWrong" style="color:#dc3545"></div><div class="rb-label">ভুল</div></div>
+      <div class="result-bar"><div class="rb-num" id="rbPct" style="color:#e8730a"></div><div class="rb-label">স্কোর</div></div>
+    </div>
+    <div id="attemptInfo" style="font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66;margin-bottom:1rem;"></div>
+    <button class="retry-btn" onclick="startQuiz(currentSetId)">আবার চেষ্টা করো</button>
+    <button class="review-btn" onclick="showReview()">উত্তর দেখো</button>
+    <br>
+    <button class="back-btn" onclick="goToHub()">← Hub এ ফিরে যাও</button>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+//  ইউজার ডেটাবেস
+// ============================================================
+const MAX_ATTEMPTS = 10;
+const TOTAL_SETS = 8;
+
+const userData = [
+  {username:"alfa_romeo", password:"ARx7P29m", attempts:{}},
+  {username:"santos", password:"St8Qv41L", attempts:{}},
+  {username:"falcon", password:"Fc3MZ92k", attempts:{}},
+  {username:"titan", password:"Ti6Rp84W", attempts:{}},
+  {username:"matrix", password:"Mx5Kd73N", attempts:{}},
+  {username:"phoenix", password:"Ph9Js28V", attempts:{}},
+  {username:"cobra", password:"Cb4Ln65X", attempts:{}},
+  {username:"shadow", password:"Sh7Wp19Q", attempts:{}},
+  {username:"rocket", password:"Rc2Ty86M", attempts:{}},
+  {username:"warrior", password:"Wr8Az34K", attempts:{}},
+  {username:"eagle", password:"Eg5Xq72P", attempts:{}},
+  {username:"thunder", password:"Th1Vk93R", attempts:{}},
+  {username:"dragon", password:"Dr6Hm48N", attempts:{}},
+  {username:"panther", password:"Pa9Nc25J", attempts:{}},
+  {username:"viking", password:"Vi4Qs87L", attempts:{}},
+  {username:"hunter", password:"Hu7Bp31X", attempts:{}},
+  {username:"legend", password:"Le2Mz64T", attempts:{}},
+  {username:"ranger", password:"Ra8Kd95W", attempts:{}},
+  {username:"knight", password:"Kn3Xp57Q", attempts:{}},
+  {username:"turbo", password:"Tu6Lv21N", attempts:{}},
+  {username:"alpha", password:"Ap9Rm83K", attempts:{}},
+  {username:"bravo", password:"Br5Yt42M", attempts:{}},
+  {username:"charlie", password:"Ch7Wq16P", attempts:{}},
+  {username:"delta", password:"De4Nk78X", attempts:{}},
+  {username:"echo", password:"Ec8Jp35V", attempts:{}},
+  {username:"foxtrot", password:"Fx2Lm94Q", attempts:{}},
+  {username:"gamma", password:"Ga6Xs27T", attempts:{}},
+  {username:"helix", password:"He1Vp85N", attempts:{}},
+  {username:"inferno", password:"In9Qk43L", attempts:{}},
+  {username:"jaguar", password:"Ja5Mz72W", attempts:{}},
+  {username:"karma", password:"Ka8Rp14X", attempts:{}},
+  {username:"laser", password:"La3Tn67Q", attempts:{}},
+  {username:"meteor", password:"Me7Wx29P", attempts:{}},
+  {username:"nova", password:"No4Kz86M", attempts:{}},
+  {username:"omega", password:"Om2Lp53V", attempts:{}},
+  {username:"pegasus", password:"Pe9Xq71N", attempts:{}},
+  {username:"quantum", password:"Qu5Vr38K", attempts:{}},
+  {username:"rebel", password:"Re8Mz24T", attempts:{}},
+  {username:"storm", password:"St1Kp97W", attempts:{}},
+  {username:"tornado", password:"To6Nx45Q", attempts:{}},
+  {username:"ultra", password:"Ul3Wp82M", attempts:{}},
+  {username:"vector", password:"Ve7Lq19X", attempts:{}},
+  {username:"wolf", password:"Wo4Rm63P", attempts:{}},
+  {username:"xenon", password:"Xe9Tk25N", attempts:{}},
+  {username:"yodha", password:"Yo2Vz78K", attempts:{}},
+  {username:"zeus", password:"Ze8Mp41Q", attempts:{}},
+  {username:"atlas", password:"At5Lx93W", attempts:{}},
+  {username:"blaze", password:"Bl1Qn67M", attempts:{}},
+  {username:"cyclone", password:"Cy7Rp34T", attempts:{}},
+  {username:"dynamo", password:"Dy4Wk82X", attempts:{}},
+  {username:"apollo", password:"Ap7Kx94Lm", attempts:{}},
+  {username:"archer", password:"Ar3Vp62Qn", attempts:{}},
+  {username:"asteroid", password:"As8Tm15Rw", attempts:{}},
+  {username:"bandit", password:"Ba5Qz71Kp", attempts:{}},
+  {username:"bison", password:"Bi9Ln34Xt", attempts:{}},
+  {username:"bullet", password:"Bu2Wr86Mv", attempts:{}},
+  {username:"canyon", password:"Ca6Xp29Qk", attempts:{}},
+  {username:"captain", password:"Cp1Mz75Ln", attempts:{}},
+  {username:"comet", password:"Co8Tk43Wp", attempts:{}},
+  {username:"cyclonex", password:"Cy4Vr92Km", attempts:{}},
+  {username:"diesel", password:"Di7Lp18Qx", attempts:{}},
+  {username:"domino", password:"Do3Wn67Rt", attempts:{}},
+  {username:"duke", password:"Du9Kx25Mv", attempts:{}},
+  {username:"empire", password:"Em5Qp84Ln", attempts:{}},
+  {username:"explorer", password:"Ex2Vz39Kt", attempts:{}},
+  {username:"fighter", password:"Fi8Lm71Qw", attempts:{}},
+  {username:"galaxy", password:"Ga4Tk26Xp", attempts:{}},
+  {username:"gladiator", password:"Gl7Wp95Mn", attempts:{}},
+  {username:"gravity", password:"Gr1Nx53Lq", attempts:{}},
+  {username:"hawk", password:"Ha9Kz42Rt", attempts:{}},
+  {username:"horizon", password:"Ho5Vm87Xp", attempts:{}},
+  {username:"icefire", password:"Ic3Lp16Qn", attempts:{}},
+  {username:"impact", password:"Im8Wr74Kt", attempts:{}},
+  {username:"ironman", password:"Ir2Xq95Mv", attempts:{}},
+  {username:"jetstar", password:"Je6Nk38Lp", attempts:{}},
+  {username:"kingston", password:"Ki1Vp72Qw", attempts:{}},
+  {username:"lightning", password:"Li9Tm45Rx", attempts:{}},
+  {username:"majestic", password:"Ma4Kp83Ln", attempts:{}},
+  {username:"monster", password:"Mo7Wz21Qt", attempts:{}},
+  {username:"neptune", password:"Ne3Lx96Mv", attempts:{}},
+  {username:"ninja", password:"Ni8Qr54Kp", attempts:{}},
+  {username:"orbit", password:"Or2Vp73Ln", attempts:{}},
+  {username:"patriot", password:"Pa6Tk18Qw", attempts:{}},
+  {username:"pioneer", password:"Pi1Xm85Rt", attempts:{}},
+  {username:"predator", password:"Pr9Lq47Kv", attempts:{}},
+  {username:"proton", password:"Pt4Wn62Mx", attempts:{}},
+  {username:"rapid", password:"Ra7Kx93Lp", attempts:{}},
+  {username:"samurai", password:"Sa3Vp25Qn", attempts:{}},
+  {username:"sniper", password:"Sn8Tm71Rw", attempts:{}},
+  {username:"solaris", password:"So2Qk84Mv", attempts:{}},
+  {username:"spartan", password:"Sp6Ln39Xt", attempts:{}},
+  {username:"striker", password:"St1Wr57Kp", attempts:{}},
+  {username:"summit", password:"Su9Xp26Lm", attempts:{}},
+  {username:"taurus", password:"Ta5Vz91Qw", attempts:{}},
+  {username:"tempest", password:"Te3Kp48Rt", attempts:{}},
+  {username:"trident", password:"Tr8Wm72Ln", attempts:{}},
+  {username:"valiant", password:"Va2Nx35Qk", attempts:{}},
+  {username:"voyager", password:"Vo6Lp97Mx", attempts:{}},
+  {username:"wildfire", password:"Wi1Tk64Rv", attempts:{}},
+  {username:"zenith", password:"Ze9Qx28Lp", attempts:{}}
+];
+
+// ============================================================
+//  সব সেটের ডেটা (Set 1-8 for Unit 1 Chapter 2)
+// ============================================================
+const allSets = {
+  1: {
+    name: 'Set 1',
+    icon: '🕉️',
+    topic: 'ভক্তিবাদের পটভূমি ও সূচনা পর্ব',
+    questions: [
+      {q: 'সুলতানি যুগে হিন্দু-মুসলিম সম্পর্ককে "নিরবচ্ছিন্ন সাম্প্রদায়িক দ্বন্দ্বের কাহিনি নয়, বরং তা হল এক গৌরবময় সম্প্রীতির যুগ" বলে কে অভিহিত করেছেন?', opts: ['ড. রমেশচন্দ্র মজুমদার', 'বিনায়ক দামোদর সাভারকর', 'হরবনস মুখিয়া', 'জি এস ঘুরায়ে'], ans: 2, exp: 'ঐতিহাসিক হরবনস মুখিয়া মনে করেন যে মধ্যযুগীয় ভারতের ইতিহাস নিরবচ্ছিন্ন দ্বন্দ্বের নয়, বরং তা একটি গৌরবময় সম্প্রীতির যুগ ছিল।'},
+      {q: 'ইসলামীয় আইনের ব্যাখ্যাকারী চারটির মধ্যে কোন্ মতবাদের প্রবক্তা ইসলামীয় রাষ্ট্রে জিজিয়া কর প্রদানের বিনিময়ে পৌত্তলিকদের বসবাসের অনুমতি দেন?', opts: ['হানাফি', 'শাফি', 'মালিকি', 'হাম্বলি'], ans: 0, exp: 'আবু হানিফা মতবাদের প্রবক্তা হানাফি জিজিয়া কর প্রদানের বিনিময়ে পৌত্তলিকদের বসবাসের অনুমতি দেন এবং দিল্লির সুলতানরা এই মতবাদটাই গ্রহণ করেন।'},
+      {q: 'ভক্তিবাদের মূল কথা কী ছিল?', opts: ['আত্মার সঙ্গে পরমাত্মার মিলন', 'ধর্মের সঙ্গে ধর্মের মিলন', 'মূর্তিপূজার মাধ্যমে মুক্তিলাভ', 'কঠোর তপশ্চর্যা'], ans: 0, exp: 'ভক্তিবাদের মূল কথা হল আত্মার সঙ্গে পরমাত্মার মিলন, অর্থাৎ একমাত্র ভক্তি ও প্রেমের মাধ্যমে মানুষের সঙ্গে ঈশ্বরের মিলন সম্ভব।'},
+      {q: 'দক্ষিণ ভারতে ভক্তি আন্দোলনের সূচনা কোন্ সম্প্রদায় করেছিল?', opts: ['নাথ ও যোগী সম্প্রদায়', 'শৈব নায়নার ও বৈষ্ণব আলওয়ার সম্প্রদায়', 'সুফি ও দরবেশ সম্প্রদায়', 'কাপালিক ও তান্ত্রিক সম্প্রদায়'], ans: 1, exp: 'খ্রিস্টীয় সপ্তম থেকে দ্বাদশ শতকের মধ্যে দাক্ষিণাত্যে শৈব নায়নার ও বৈষ্ণব আলওয়ার সম্প্রদায় ভক্তি আন্দোলনের সূচনা করে।'},
+      {q: 'ভক্তি আন্দোলনের অন্যতম বৈশিষ্ট্য হিসেবে সংস্কৃতের পরিবর্তে স্থানীয় ভাষার ব্যবহারের কথা কে বলেছেন?', opts: ['ড. তারাচাঁদ', 'রোমিলা থাপার', 'ড. নরেন্দ্রনাথ ভট্টাচার্য', 'কোকা আন্তোনোভা'], ans: 2, exp: 'ড. নরেন্দ্রনাথ ভট্টাচার্য বলেছেন যে, এই আন্দোলনের অন্যতম বৈশিষ্ট্য হল সংস্কৃতের পরিবর্তে স্থানীয় ভাষার ব্যবহার।'},
+      {q: 'ভক্তিবাদের আদি প্রচারক কাকে বলা হয়?', opts: ['শঙ্করাচার্য', 'রামানন্দ', 'রামানুজ', 'কবির'], ans: 2, exp: 'ভক্তিবাদের আদি প্রচারক ছিলেন রামানুজ, যাঁর প্রচার কার্যের আদি কেন্দ্র ছিল কাঞ্চি ও শ্রীরঙ্গম।'},
+      {q: 'রামানুজ রচিত বেদান্ত সূত্র বা ব্রহ্মসূত্রের বিশিষ্ট দ্বৈতবাদী ভাষ্যটির নাম কী?', opts: ['জ্ঞানেশ্বরী', 'শ্রীভাষ্য', 'বেদান্তসার', 'বেদার্থ সংগ্রহ'], ans: 1, exp: 'রামানুজ বেদান্ত সূত্র বা ব্রহ্মসূত্রের বিশিষ্ট দ্বৈতবাদী ভাষ্য রচনা করেন, যার নাম শ্রীভাষ্য।'},
+      {q: 'দক্ষিণ ভারতে হিন্দুধর্মকে জনপ্রিয় করে তোলেন কে, যিনি ভারতের চার প্রান্তে চারটি মঠ স্থাপন করেন?', opts: ['রামানন্দ', 'বল্লভাচার্য', 'নিম্বার্ক', 'শঙ্করাচার্য'], ans: 3, exp: 'শঙ্করাচার্য তাঁর অদ্বৈতবাদ প্রচার করে দক্ষিণ ভারতে হিন্দুধর্মকে জনপ্রিয় করে তোলেন এবং ভারতের চারটি প্রান্তে মঠ স্থাপন করেন।'},
+      {q: 'আদি গুরু শঙ্করাচার্যের দর্শনের মূল ভিত্তি কী ছিল?', opts: ['প্রেম ও ভক্তি', 'মায়া বা জ্ঞানযোগ', 'কর্মযোগ', 'অবতারবাদ'], ans: 1, exp: 'শঙ্করাচার্যের দর্শনের মূল ভিত্তি ছিল মায়া এবং তিনি বিশ্বাস করতেন যে, মুক্তির একমাত্র পথ হল জ্ঞান বা জ্ঞানযোগ।'},
+      {q: 'রামানুজ কার রাজরোষ এড়াতে হোয়েসল রাজ্যে গিয়ে রাজা বিত্তিদেবের পৃষ্ঠপোষকতা লাভ করেন?', opts: ['চোলরাজ অধিরাজেন্দ্র', 'প্রথম পরান্তক', 'রাজা রাজ চোল', 'প্রথম কুলোতুঙ্গ'], ans: 0, exp: 'চোলরাজ অধিরাজেন্দ্র নিজে শৈব ছিলেন বলে রামানুজের বৈষ্ণবধর্ম প্রচারে রুষ্ট হন, ফলে রামানুজ হোয়েসল রাজ্যে আশ্রয় নেন।'},
+      {q: 'দক্ষিণ ভারতে তেনকালাই (Tenkalai) সম্প্রদায়ের প্রতিষ্ঠাতা কে ছিলেন?', opts: ['মাধবাচার্য', 'পিল্লাই লোকাচার্য', 'রামানন্দ', 'নিম্বার্ক'], ans: 1, exp: 'তেনকালাই সম্প্রদায়ের প্রতিষ্ঠাতা পিল্লাই লোকাচার্য মনে করতেন যে, ঈশ্বরের প্রতি মানুষের ভালোবাসা স্বতঃস্ফূর্ত এবং তার মাধ্যমেই মুক্তি সম্ভব।'},
+      {q: 'ভক্তিকে উপাসনা না বলে ঈশ্বর তথা জীবের প্রতি প্রেমের কথা কোন্ সাধক বলেছেন?', opts: ['নিম্বার্ক', 'মাধবাচার্য', 'রামানুজ', 'শঙ্করদেব'], ans: 0, exp: 'নিম্বার্ক ভক্তিকে উপাসনা না বলে ঈশ্বর তথা জীবের প্রতি প্রেমের কথা বলেছেন।'},
+      {q: 'কে বিষ্ণুর উপাসনার মধ্যে প্রভু-ভৃত্যের সম্পর্ক দেখেছিলেন?', opts: ['নিম্বার্ক', 'পিল্লাই লোকাচার্য', 'মাধবাচার্য', 'রামানুজ'], ans: 2, exp: 'দ্বাদশ থেকে চতুর্দশ শতকে দার্শনিক মাধবাচার্য (আনন্দ তীর্থ) বিষ্ণুর উপাসনার মধ্যে প্রভু-ভৃত্যের সম্পর্ক দেখেছেন।'},
+      {q: '"জীবনের বিভিন্ন ক্ষেত্রে দুই সম্প্রদায়ের মধ্যে যথেষ্ট আদানপ্রদান ঘটেছিল"—এই মতটি কাদের?', opts: ['ড. রমেশচন্দ্র মজুমদার ও জি এস ঘুরায়ে', 'ড. তারাচাঁদ, রমাপ্রসাদ ত্রিপাঠী ও বেনারসিপ্রসাদ সাক্সেনা', 'সাভারকর ও জিন্নাহ', 'ইস্তিয়াক হুসেন কুরেশি ও হাফিজ মালিক'], ans: 1, exp: 'এই ঐতিহাসিকরা মনে করেন যে, মধ্যযুগে হিন্দু-মুসলিম সহাবস্থানের ফলে জীবনযাত্রার বিভিন্ন ক্ষেত্রে দুই সম্প্রদায়ের মধ্যে যথেষ্ট আদানপ্রদান ঘটেছিল।'},
+      {q: 'আলওয়ার সাধকদের "সর্বশ্রেষ্ঠ দেবতা" কে ছিলেন?', opts: ['শিব', 'ব্রহ্মা', 'বিষ্ণু', 'ইন্দ্র'], ans: 2, exp: 'আলওয়ার সম্প্রদায়ের উদ্দেশ্য ছিল বৌদ্ধ ও জৈন ধর্ম থেকে জনসাধারণকে সরিয়ে এনে সর্বশ্রেষ্ঠ দেবতার পূজায় আকৃষ্ট করা, এবং তাঁদের এই সর্বশ্রেষ্ঠ দেবতা ছিলেন বিষ্ণু।'}
+    ]
+  },
+  2: {
+    name: 'Set 2',
+    icon: '🙏',
+    topic: 'উত্তর ও মধ্য ভারতের ভক্তিবাদী সাধক',
+    questions: [
+      {q: 'রামাৎ বৈষ্ণব সম্প্রদায়ের প্রতিষ্ঠাতা কে ছিলেন?', opts: ['রামানুজ', 'রামানন্দ', 'কবির', 'দাদুদয়াল'], ans: 1, exp: 'ভক্তিবাদের অন্যতম প্রবর্তক রামানন্দ ছিলেন রামানুজের শিষ্য এবং নিজে ছিলেন রামাৎ বৈষ্ণব সম্প্রদায়ের প্রতিষ্ঠাতা।'},
+      {q: 'কে প্রথম দক্ষিণ ও উত্তর ভারতের ভক্তিবাদী আন্দোলনের মধ্যে যোগসূত্র স্থাপন করেন?', opts: ['রামানুজ', 'শঙ্করাচার্য', 'রামানন্দ', 'গুরু নানক'], ans: 2, exp: 'রামানন্দ প্রথম দক্ষিণ ও উত্তর ভারতের ভক্তিবাদী আন্দোলনের মধ্যে যোগসূত্র স্থাপন করেন এবং তিনি হিন্দি ভাষায় ধর্মপ্রচার করতেন।'},
+      {q: 'রামানন্দের শিষ্যদের মধ্যে কে পেশায় একজন মুচি ছিলেন?', opts: ['ভগত সৈন', 'সাধন', 'কবির', 'রবিদাস'], ans: 3, exp: 'রামানন্দ সকল বর্ণের মানুষদের শিষ্য হিসেবে গ্রহণ করতেন, যাঁদের মধ্যে তাঁর শিষ্য রবিদাস ছিলেন মুচি এবং কবির ছিলেন তাঁতি।'},
+      {q: 'মধ্যযুগীয় ভারতবর্ষের সর্বাপেক্ষা উদারপন্থী সংস্কারক কাকে বলা হয়?', opts: ['শ্রীচৈতন্য', 'কবির', 'গুরু নানক', 'দাদুদয়াল'], ans: 1, exp: 'রামানন্দের শিষ্যদের মধ্যে সর্বাধিক খ্যাতি অর্জন করা কবির ছিলেন মধ্যযুগীয় ভারতবর্ষের সর্বাপেক্ষা উদারপন্থী সংস্কারক।'},
+      {q: 'কবিরের রচিত সুন্দর সুন্দর উপদেশমূলক পদগুলি কী নামে পরিচিত?', opts: ['দোঁহা', 'অভঙ্গ', 'পদাবলি', 'কীর্তন'], ans: 0, exp: 'কবির সকলের বোধগম্য হিন্দি ভাষায় সুন্দর সুন্দর দোঁহা রচনা করে উপদেশ দিতেন।'},
+      {q: '"পাথরের মূর্তির মধ্যেই যদি দেবতার অধিষ্ঠান হয়, তাহলে আমি সুবিশাল পর্বতকেই দেবতা হিসেবে পূজা করার পক্ষপাতী।" - উক্তিটি কার?', opts: ['নামদেব', 'জ্ঞানদেব', 'কবির', 'রামানন্দ'], ans: 2, exp: 'মূর্তিপূজার বিরুদ্ধে তীব্র প্রতিবাদ জানিয়ে এবং ঈশ্বর নিরাকার ও বর্ণহীন তা বোঝাতে গিয়ে কবির এই বিখ্যাত উক্তিটি করেছিলেন।'},
+      {q: 'কবির কোন্ সুলতানের সমসাময়িক ছিলেন বলে মনে করা হয়?', opts: ['আলাউদ্দিন খলজি', 'সুলতান সিকন্দর লোদি', 'ইব্রাহিম লোদি', 'ফিরোজ শাহ তুঘলক'], ans: 1, exp: 'কবিরের জন্ম বা মৃত্যু সম্পর্কে নিশ্চিত তথ্য না থাকলেও মনে করা হয় যে, তিনি সুলতান সিকন্দর লোদি (১৪৮৯-১৫১৭ খ্রি.)-র সমসাময়িক ছিলেন।'},
+      {q: 'দাদু বা দাদুদয়াল পেশায় কী ছিলেন?', opts: ['তাঁতি', 'মুচি', 'নাপিত', 'ধুনুরি'], ans: 3, exp: 'বিশিষ্ট কবি ও ভক্তিবাদী সাধক দাদু দয়াল-এর পিতা লোদি রাম ছিলেন ধর্মান্তরিত মুসলমান এবং দাদু পেশায় ছিলেন একজন ধুনুরি।'},
+      {q: '১৫৮৪ খ্রিস্টাব্দ নাগাদ ফতেপুর সিক্রিতে দাদুর সঙ্গে কোন্ মুঘল সম্রাটের সাক্ষাৎ হয়?', opts: ['বাবর', 'হুমায়ুন', 'আকবর', 'জাহাঙ্গির'], ans: 2, exp: '১৫৮৪ খ্রিস্টাব্দ নাগাদ ফতেপুর সিক্রিতে দাদুর সঙ্গে মুঘল সম্রাট আকবরের সাক্ষাৎ হয়।'},
+      {q: '"আমি হিন্দু হতে চাই না, মুসলমান হতে চাই না, ষড়দর্শনের পথ আমার নয়। আমি চাই দয়াময়কে।" - কে বলেছিলেন?', opts: ['দাদুদয়াল', 'গুরু নানক', 'কবির', 'শ্রীচৈতন্য'], ans: 0, exp: 'হিন্দু-মুসলিম ঐক্যের অন্যতম প্রবক্তা দাদুদয়াল ঈশ্বর ভক্তি ও মানবপ্রেম বোঝাতে গিয়ে এই উক্তিটি করেছিলেন।'},
+      {q: 'শিখধর্মের প্রবর্তক কে ছিলেন?', opts: ['গুরু অঙ্গদ', 'গুরু গোবিন্দ সিংহ', 'গুরু নানক', 'গুরু অর্জুন'], ans: 2, exp: 'শিখধর্মের প্রবর্তক ও মধ্যযুগের ভক্তিবাদের অন্যতম প্রচারক ছিলেন গুরু নানক।'},
+      {q: 'গুরু নানকের ধর্মাদর্শের মূলকথা কী ছিল?', opts: ['অবতারবাদ', 'অদ্বৈতবাদ', 'সৎ-শ্রী-আকাল', 'বহুদেববাদ'], ans: 2, exp: 'গুরু নানকের ধর্মের মূলকথা ছিল সৎ-শ্রী-আকাল অর্থাৎ সত্যস্বরূপ ঈশ্বরের আরাধনা এবং মানব সমাজে সাম্য, মৈত্রী ও পবিত্রতা প্রতিষ্ঠা।'},
+      {q: 'নানক তাঁর অনুগামীদের জন্য যে লঙ্গরখানা বা ঈশ্বরের রান্নাঘর তৈরি করেন তার নাম কী ছিল?', opts: ['নামঘর', 'গুরু কা লঙ্গর', 'খালসা', 'সত্র'], ans: 1, exp: 'পরিণত বয়সে রাভি নদীর তীরে বাস করার সময় তিনি গুরু কা লঙ্গর (ঈশ্বরের রান্নাঘর) তৈরি করেন, যেখানে সবধরনের মানুষ একসঙ্গে খেতে বসত।'},
+      {q: 'গুরু নানকের বাণী সংকলন গ্রন্থসাহেব বা আদিগ্রন্থ কে সংকলন করেছিলেন?', opts: ['গুরু অঙ্গদ', 'গুরু অমরদাস', 'পঞ্চম শিখগুরু অর্জুন সিংহ', 'গুরু গোবিন্দ সিংহ'], ans: 2, exp: 'নানকের বাণীগুলি গ্রন্থসাহেব বা আদিগ্রন্থ নামে পরিচিত, যা সংকলন করেছিলেন পঞ্চম শিখগুরু অর্জুন সিংহ।'},
+      {q: 'শিখদের পবিত্র ধর্মগ্রন্থ আদিগ্রন্থ কোন্ লিপিতে লেখা হয়েছিল?', opts: ['দেবনাগরী', 'গুরুমুখি', 'ফারসি', 'ব্রাহ্মী'], ans: 1, exp: 'শিখদের পবিত্র ধর্মগ্রন্থ গ্রন্থসাহেব বা আদিগ্রন্থ গুরুমুখি লিপিতে লেখা হয়েছিল।'}
+    ]
+  },
+  3: {
+    name: 'Set 3',
+    icon: '🔱',
+    topic: 'পূর্ব ভারতের ভক্তি আন্দোলন',
+    questions: [
+      {q: 'বাংলায় বৈষ্ণব ধর্মের প্রবর্তক কে ছিলেন?', opts: ['শঙ্করদেব', 'চৈতন্যদেব', 'বল্লভাচার্য', 'রামানন্দ'], ans: 1, exp: 'ভক্তিধর্মের অন্যতম প্রবক্তা এবং বাংলায় বৈষ্ণব ধর্মের প্রবর্তক ছিলেন চৈতন্যদেব, যাঁর জন্ম ১৪৮৬ খ্রিস্টাব্দে নবদ্বীপে হয়েছিল।'},
+      {q: 'চৈতন্যদেব গয়াতে কার কাছে কৃষ্ণমন্ত্রে দীক্ষা নেন?', opts: ['কেশব ভারতী', 'অদ্বৈত আচার্য', 'ঈশ্বরপুরী', 'রূপ গোস্বামী'], ans: 2, exp: 'পিতার মৃত্যুর পর শাস্ত্র মতে গয়াতে পিণ্ডদানকালে তিনি ঈশ্বরপুরী নামক এক সন্ন্যাসীর সান্নিধ্যে আসেন এবং তাঁর কাছে কৃষ্ণমন্ত্রে দীক্ষা নেন।'},
+      {q: 'মাত্র ২৪ বছর বয়সে চৈতন্যদেব কার কাছে সন্ন্যাস ধর্মে দীক্ষা নিয়ে গৃহত্যাগ করেন?', opts: ['ঈশ্বরপুরী', 'কেশব ভারতী', 'মাধবেন্দ্রপুরী', 'শ্রীবাস'], ans: 1, exp: 'মাত্র ২৪ বছর বয়সে তিনি কেশব ভারতীর কাছে সন্ন্যাস ধর্মে দীক্ষা নিয়ে গৃহত্যাগ করেন।'},
+      {q: 'চৈতন্যদেব প্রচারিত ভক্তিবাদ কী নামে পরিচিত?', opts: ['গৌড়ীয় বৈষ্ণব ধর্ম', 'রামাৎ বৈষ্ণব ধর্ম', 'নামধর্ম', 'সহজবাদ'], ans: 0, exp: 'চৈতন্যদেব প্রচারিত ভক্তিবাদ যা বাংলার নিম্নশ্রেণির মানুষের মধ্যে তীব্র আলোড়ন সৃষ্টি করেছিল, তা গৌড়ীয় বৈষ্ণব ধর্ম বা নব্য বৈষ্ণব ধর্ম নামেও পরিচিত।'},
+      {q: 'শ্রীচৈতন্যের জন্মকালে গৌড়ের বাদশাহ কে ছিলেন?', opts: ['আলাউদ্দিন হোসেন শাহ', 'রুকনউদ্দিন বরবক শাহ', 'জালাল-উদ্দিন ফতে শাহ', 'নসরৎ শাহ'], ans: 2, exp: '১৪৮৬ খ্রিস্টাব্দে শ্রীচৈতন্যের জন্মের সময় গৌড়ের বাদশাহ ছিলেন ইলিয়াসশাহি বংশের সুলতান জালাল-উদ্দিন ফতে শাহ।'},
+      {q: 'চৈতন্যদেবের প্রথম জীবনীকার কে ছিলেন?', opts: ['কৃষ্ণদাস কবিরাজ', 'বৃন্দাবনদাস', 'জয়ানন্দ', 'মুরারিগুপ্ত'], ans: 3, exp: 'মুরারিগুপ্ত ছিলেন চৈতন্যের বন্ধু এবং তাঁর প্রথম জীবনীকার, যিনি তাঁর লেখায় জগাই-মাধাই উদ্ধারের কাহিনি লিপিবদ্ধ করেছেন।'},
+      {q: 'আসাম অঞ্চলে বৈষ্ণব ধর্মের প্রধান প্রচারক কে ছিলেন?', opts: ['শঙ্করদেব', 'মাধবদেব', 'চৈতন্যদেব', 'রামানুজ'], ans: 0, exp: 'আসাম অঞ্চলে বৈষ্ণবধর্মের প্রধান প্রচারক ছিলেন শঙ্করদেব (১৪৪৯-১৫৬৮ খ্রি.)।'},
+      {q: 'শঙ্করদেব প্রবর্তিত বৈষ্ণবধর্ম কী নামে পরিচিত ছিল?', opts: ['গৌড়ীয় ধর্ম', 'নামধর্ম', 'রামাৎ ধর্ম', 'মহাপুরুষিয়া ধর্ম'], ans: 1, exp: 'শঙ্করদেব মনে করতেন যে নামজপ ও সংকীর্তনের মাধ্যমেই ঈশ্বরের সান্নিধ্য পাওয়া যায়, এ কারণে অনেকে শঙ্করদেব প্রবর্তিত বৈষ্ণবধর্মকে নামধর্ম বলেন।'},
+      {q: 'শঙ্করদেব তাঁর মতাদর্শ বা ভক্তিতত্ত্ব কোন্ গ্রন্থে বিবৃত করেছেন?', opts: ['জ্ঞানেশ্বরী', 'শ্রীভাষ্য', 'ভক্তি রত্নাকর ও ভক্তি প্রদীপ', 'চৈতন্যচরিতামৃত'], ans: 2, exp: 'শঙ্করদেব রচিত ভক্তি রত্নাকর ও ভক্তি প্রদীপ গ্রন্থে তাঁর মতাদর্শ বা ভক্তিতত্ত্ব সুন্দরভাবে বিবৃত হয়েছে।'},
+      {q: 'আসামের বৈষ্ণবদের নাম-সংকীর্তন করার স্থান বা উপসনালয়কে কী বলা হত?', opts: ['সত্র', 'নামঘর', 'খানকা', 'মঠ'], ans: 1, exp: 'শঙ্করদেবের এই সম্প্রদায়ের নাম-সংকীর্তন করার স্থান বা উপসনালয়কে বলা হত নামঘর।'},
+      {q: 'শঙ্করদেবের মৃত্যুর পর তাঁর প্রধান শিষ্য মাধবদেব কোন্ সম্প্রদায়ের প্রবর্তন করেন?', opts: ['মহাপুরুষিয়া সম্প্রদায়', 'কাল সংহতি সম্প্রদায়', 'বামুনিয়া সম্প্রদায়', 'ঠাকুরিয়া সম্প্রদায়'], ans: 0, exp: 'শঙ্করদেবের মৃত্যুর পর তাঁর প্রধান শিষ্য মাধবদেব মহাপুরুষিয়া সম্প্রদায় প্রবর্তন করেন।'},
+      {q: 'দামোদর দেব আসামে বৈষ্ণবধর্মের কোন্ উপসম্প্রদায় প্রতিষ্ঠা করেন?', opts: ['কাল সংহতি', 'ঠাকুরিয়া সম্প্রদায়', 'বামুনিয়া সম্প্রদায় বা ব্রহ্মসংহতি', 'মহাপুরুষিয়া সম্প্রদায়'], ans: 2, exp: 'মাধবদেবের মৃত্যুর পর মহাপুরুষিয়া সম্প্রদায় বিভক্ত হলে দামোদর দেব ব্রহ্মসংহতি বা বামুনিয়া সম্প্রদায় প্রতিষ্ঠা করেন।'},
+      {q: 'আসামের বৈষ্ণবধর্মের অন্যতম বৈশিষ্ট্য হিসেবে মঠভিত্তিক জীবনে ভক্তদের আশ্রমগুলিকে কী বলা হত?', opts: ['বিহার', 'খানকা', 'সত্র', 'দরগা'], ans: 2, exp: 'আসামের বৈষ্ণবধর্মের অন্যতম বৈশিষ্ট্য ছিল মঠভিত্তিক জীবন এবং এই মঠ বা ভক্তদের আশ্রমগুলিকে সত্র বলা হত।'},
+      {q: 'চৈতন্যদেবের নির্দেশে কারা জগাই-মাধাইকে উদ্ধার করেছিলেন?', opts: ['রূপ ও সনাতন গোস্বামী', 'নিত্যানন্দ এবং হরিদাস', 'অদ্বৈত আচার্য ও শ্রীবাস', 'মুরারিগুপ্ত ও জয়ানন্দ'], ans: 1, exp: 'চৈতন্যদেব নবদ্বীপের ঘরে ঘরে হরিনাম প্রচারের ভার দিয়েছিলেন নিত্যানন্দ এবং হরিদাসকে, এবং তাঁরাই প্রথম জগাই-মাধাই উদ্ধার করেন।'},
+      {q: 'কোন্ অসম রাজ বৈষ্ণব ধর্ম গ্রহণ করেছিলেন?', opts: ['রুদ্র সিংহ', 'গদাধর সিংহ', 'জয়বর্ধন', 'চক্রধ্বজ সিংহ'], ans: 2, exp: 'ঐতিহাসিক তথ্য অনুযায়ী শঙ্করদেব ও তাঁর শিষ্যদের প্রভাবে অসম রাজ জয়বর্ধন বৈষ্ণব ধর্ম গ্রহণ করেছিলেন।'}
+    ]
+  },
+  4: {
+    name: 'Set 4',
+    icon: '🔱',
+    topic: 'মহারাষ্ট্রের ধর্ম আন্দোলন এবং অন্যান্য সাধক',
+    questions: [
+      {q: 'মধ্যযুগের মহারাষ্ট্রে কয়টি ভক্তিবাদী সম্প্রদায়ের উদ্ভব ঘটেছিল?', opts: ['দুটি', 'তিনটি', 'চারটি', 'পাঁচটি'], ans: 2, exp: 'মধ্যযুগের মহারাষ্ট্রে চারটি ভক্তিবাদী সম্প্রদায়ের উদ্ভব ও প্রতিষ্ঠা লক্ষ করা যায়— মহানুভব, বারকরি, ধারকরি ও দত্তাত্রেয়।'},
+      {q: 'মহারাষ্ট্রের বারকরি সম্প্রদায়ের উপাস্য দেবতা কে ছিলেন?', opts: ['রাম', 'শিব', 'বিঠোবা বা বিঠ্‌ঠল', 'দত্তাত্রেয়'], ans: 2, exp: 'বারকরি সম্প্রদায়ের উপাস্য দেবতা হলেন বিঠ্‌ঠল এবং মহারাষ্ট্রের পন্ধারপুরে অবস্থিত বিঠোবা মন্দির হল এই আন্দোলনের মূল কেন্দ্রস্থল।'},
+      {q: 'মহারাষ্ট্রে ভক্তিবাদী আন্দোলনের প্রাণপুরুষ কাকে বলা হয়?', opts: ['নামদেব', 'তুকারাম', 'একনাথ', 'জ্ঞানদেব বা জ্ঞানেশ্বর'], ans: 3, exp: 'মহারাষ্ট্রে ভক্তিবাদী আন্দোলনের প্রাণপুরুষ হলেন জ্ঞানদেব বা জ্ঞানেশ্বর (১২৭৫-৯৬ খ্রি.)।'},
+      {q: 'জ্ঞানদেব রচিত বারকরি সম্প্রদায়ের প্রধান ধর্মগ্রন্থটির নাম কী?', opts: ['অমৃতাঙ্কুভব', 'জ্ঞানেশ্বরী', 'চাংদেবের প্রশস্তি', 'দোঁহা'], ans: 1, exp: 'জ্ঞানদেব গীতার একটি মারাঠি ভাষ্য রচনা করেন, যা জ্ঞানেশ্বরী নামে পরিচিত এবং এটিই হল বারকরি সম্প্রদায়ের প্রধান ধর্মগ্রন্থ।'},
+      {q: '"তুর্কিরা পাথরের দেবদেবীকে সমুদ্রে নিক্ষেপ করলেও তাঁদের কোনো আর্তনাদ শোনা যায়নি।" - উক্তিটি কার?', opts: ['কবির', 'জ্ঞানদেব', 'নামদেব', 'তুকারাম'], ans: 2, exp: 'মূর্তিপূজার অসারতা বোঝাতে এবং এর বিরুদ্ধে প্রতিবাদ জানিয়ে মহারাষ্ট্রের ভক্তিবাদী সাধক নামদেব এই মন্তব্যটি করেছিলেন।'},
+      {q: 'কোন্ সাধক তৃষ্ণার্ত গর্দভকে নিজ উপাস্য দেবতার জন্য আনা গোদাবরী নদীর জল পান করিয়েছিলেন?', opts: ['তুকারাম', 'একনাথ', 'রামদাস স্বামী', 'নামদেব'], ans: 1, exp: 'মহারাষ্ট্রের প্রখ্যাত সাধক একনাথ অস্পৃশ্যতা মানতেন না এবং তিনি গোদাবরীর পবিত্র জল এক তৃষ্ণার্ত গর্দভকে দান করেছিলেন।'},
+      {q: 'কোন্ মহারাষ্ট্রীয় সাধক এক সাধারণ চাষি পরিবারের সন্তান এবং বিঠোবার প্রতি প্রেম ও ভক্তির আদর্শ প্রচার করেন?', opts: ['তুকারাম', 'একনাথ', 'জ্ঞানদেব', 'রামদাস স্বামী'], ans: 0, exp: 'এক সাধারণ চাষি পরিবারের সন্তান তুকারাম (১৫৯৮-১৬৫০ খ্রি.) ছিলেন ভারতের অন্যতম শ্রেষ্ঠ ভক্তকবি।'},
+      {q: 'মহারাষ্ট্রের মহানুভব সম্প্রদায়ের প্রতিষ্ঠাতা কে ছিলেন?', opts: ['চক্রধর স্বামী', 'রামদাস স্বামী', 'নামদেব', 'একনাথ'], ans: 0, exp: 'মহারাষ্ট্রে ভক্তিবাদী আন্দোলনের আর-একটি শাখা ছিল মহানুভব সম্প্রদায় এবং এর প্রতিষ্ঠাতা ছিলেন চক্রধর স্বামী।'},
+      {q: 'মহারাষ্ট্রের ধারকরি আন্দোলনের প্রতিষ্ঠাতা কে ছিলেন?', opts: ['তুকারাম', 'রামদাস স্বামী বা সমর্থ রামদাস', 'জ্ঞানদেব', 'চক্রধর স্বামী'], ans: 1, exp: 'মহারাষ্ট্রে ধারকরি আন্দোলনের প্রতিষ্ঠাতা হলেন বিশিষ্ট সাধক, দার্শনিক, কবি ও আধ্যাত্মিক গুরু রামদাস স্বামী বা সমর্থ রামদাস।'},
+      {q: 'রামদাস স্বামী বা সমর্থ রামদাস প্রধানত কোন্ দেবতার ভক্ত ছিলেন?', opts: ['কৃষ্ণ ও রাধা', 'শিব', 'রাম ও হনুমান', 'বিঠ্‌ঠল'], ans: 2, exp: 'ধারকরি আন্দোলনের প্রতিষ্ঠাতা রামদাস স্বামী রাম ও হনুমানের ভক্ত ছিলেন।'},
+      {q: 'দক্ষিণ ভারতে বৈষ্ণবধর্ম ও ভক্তিবাদ প্রচারে কোন্ তেলুগু ব্রাহ্মণের অবদান উল্লেখযোগ্য?', opts: ['রামানুজ', 'বল্লভাচার্য', 'মাধবাচার্য', 'নিম্বার্ক'], ans: 1, exp: '১৪৭৯ খ্রিস্টাব্দে দাক্ষিণাত্যের এক তেলুগু ব্রাহ্মণ পরিবারে জন্মগ্রহণ করা বল্লভাচার্য দক্ষিণ ভারতে বৈষ্ণবধর্ম ও ভক্তিবাদ প্রচারে অসামান্য অবদান রাখেন।'},
+      {q: 'বল্লভাচার্য রচিত একেশ্বরবাদ সম্পর্কিত গ্রন্থটির নাম কী?', opts: ['শুদ্ধ অদ্বৈত', 'ভক্তি রত্নাকর', 'জ্ঞানেশ্বরী', 'শ্রীভাষ্য'], ans: 0, exp: 'বল্লভাচার্য ভগবদ্গীতা ও ব্রহ্মসূত্রের টীকা এবং শুদ্ধ অদ্বৈত নামে একেশ্বরবাদ সম্পর্কে একটি বিখ্যাত গ্রন্থ রচনা করেন।'},
+      {q: 'মীরাবাঈ কোন্ রাজপরিবারের বধূ ছিলেন?', opts: ['মাড়ওয়ারের', 'মেবারের', 'আমেরের', 'বিকানেরের'], ans: 1, exp: 'পঞ্চদশ শতকের শেষ পর্বে জন্ম নেওয়া মীরাবাঈ ছিলেন মেবারের রানা সঙ্গের পুত্রবধূ ও রানা ভোজের রাজমহিষী।'},
+      {q: 'মীরাবাঈ তাঁর সাধিকা জীবনের বেশিরভাগ সময় কোথায় কাটান?', opts: ['মথুরায়', 'বৃন্দাবনে', 'রাজস্থানে', 'গুজরাটের দ্বারকায়'], ans: 3, exp: 'মীরাবাঈ সবরকমের সাংসারিক বন্ধন ছিন্ন করে তাঁর সাধিকা জীবনের বেশিরভাগ সময়ই কাটান গুজরাটের দ্বারকায়।'},
+      {q: 'মীরাবাঈ কার একনিষ্ঠ ভক্ত ছিলেন?', opts: ['রামচন্দ্র', 'শিব', 'শ্রীকৃষ্ণ বা গিরিধারী', 'বিষ্ণু'], ans: 2, exp: 'মীরাবাঈ তাঁর জীবন উৎসর্গ করেছিলেন শ্রীকৃষ্ণ বা গিরিধারীর প্রতি একনিষ্ঠ ভক্তিতে।'}
+    ]
+  },
+  5: {
+    name: 'Set 5',
+    icon: '☪️',
+    topic: 'সুফিবাদের উদ্ভব, অর্থ এবং মতাদর্শ',
+    questions: [
+      {q: 'ইসলামের সুফিবাদের উদ্ভব আরবে হলেও, এই ভাবধারাটি মূলত কোথায় জনপ্রিয়তা লাভ করেছিল?', opts: ['মিশরে', 'ইরানে', 'আফগানিস্তানে', 'ভারতে'], ans: 1, exp: 'সুফিবাদের জন্ম আরব দেশে হলেও কালক্রমে এই মরমিয়া ভাবধারাটি ইরানে সর্বাধিক জনপ্রিয়তা লাভ করেছিল।'},
+      {q: 'ঐতিহাসিকদের মতে, সুফিবাদের উৎপত্তির মূল কারণ কী ছিল?', opts: ['অন্য ধর্মকে ধ্বংস করা', 'রাজনৈতিক ক্ষমতা দখল করা', 'ইসলামের ধর্মীয় বিচ্যুতির বিরুদ্ধে মহম্মদের শিষ্যদের প্রতিবাদ', 'বাণিজ্যের প্রসার ঘটানো'], ans: 2, exp: 'হজরত মহম্মদের মৃত্যুর পর মুসলিমদের মধ্যে বিপুল ধনৈশ্বর্য ও ভোগবিলাসের প্রবণতা বৃদ্ধি পেলে, ধর্মনিষ্ঠ মুসলিমরা তার বিরুদ্ধে প্রতিবাদ হিসেবে ঐহিক জীবন ত্যাগ করে সুফিবাদের পথ ধরেন।'},
+      {q: 'খ্রিস্টীয় অষ্টম শতকে বসরার একজন বিখ্যাত নারী সুফিসাধিকার নাম কী ছিল?', opts: ['ফতিমা', 'সুফি রাবেয়া', 'আয়েশা', 'মমতাজ'], ans: 1, exp: 'আত্মার শুদ্ধিকরণ এবং ঈশ্বর উপলব্ধিতে যাঁরা মনপ্রাণ সঁপে দিয়েছিলেন, তাঁদের মধ্যে অন্যতম ছিলেন বসরার বিখ্যাত নারী সাধিকা সুফি রাবেয়া।'},
+      {q: 'পারস্যের কোন্ বিখ্যাত সুফিসাধককে ইসলামত্যাগী হিসেবে প্রাণদণ্ড দেওয়া হয়েছিল?', opts: ['মনসুর অল হল্লাজ', 'আল-গাজ্জালি', 'নিজামউদ্দিন আউলিয়া', 'শেখ বদরউদ্দিন'], ans: 0, exp: 'দশম শতকের সুফিসাধক মনসুর অল হল্লাজ প্রেম ও ভক্তিকেই ঈশ্বরের মিলনের সেতু বলায় গোঁড়া মুসলিমরা ক্ষুব্ধ হয় এবং তাঁকে প্রাণদণ্ড দেওয়া হয়।'},
+      {q: 'কোন্ বিখ্যাত ইসলামীয় দার্শনিকের ব্যাখ্যা সুফিবাদকে শক্তিশালী করে এবং একে ইসলামের মূল শাখা হিসেবে প্রতিষ্ঠিত করে?', opts: ['আল বিরুনি', 'আল-গাজ্জালি', 'ইবন খালদুন', 'ইবন বতুতা'], ans: 1, exp: 'ইসলামীয় দার্শনিক আল-গাজ্জালির ব্যাখ্যা সুফিবাদকে শক্তিশালী করে এবং তিনি ইসলাম ও সুফিবাদের মধ্যে এক অপূর্ব সমন্বয় ঘটান।'},
+      {q: 'ঐতিহাসিক ইউসুফ হোসেন-এর মতে সুফিবাদের জন্ম কোথা থেকে হয়েছে?', opts: ['হিন্দু বেদান্ত থেকে', 'ইসলামের বক্ষদেশ থেকে', 'বৌদ্ধ শূন্যবাদ থেকে', 'গ্রিক দর্শন থেকে'], ans: 1, exp: 'ঐতিহাসিক ইউসুফ হোসেন বলেছেন, "ইসলামের বক্ষদেশ থেকেই সুফিবাদের জন্ম", অর্থাৎ ইসলাম ধর্মের সূচনাপর্বেই সুফিবাদের অস্তিত্ব ছিল।'},
+      {q: 'সুফি কথাটির উৎপত্তি সম্পর্কে প্রচলিত মতানুযায়ী সাফা শব্দের অর্থ কী?', opts: ['পশম', 'পবিত্রতা', 'সারিবদ্ধ', 'ঈশ্বর'], ans: 1, exp: 'সুফিরা দেহ, মন ও আচরণের পবিত্রতার ওপর জোর দিতেন বলে মনে করা হয় যে পবিত্রতা বা সাফা শব্দ থেকেই সুফি কথাটি এসেছে।'},
+      {q: 'সুফিরা ঈশ্বরের নামগান করে সংগীত ও নৃত্য করতেন, এই প্রথাকে সুফিবাদে কী বলা হয়?', opts: ['কাওয়ালি', 'জিকির', 'সমা', 'তওবা'], ans: 2, exp: 'সুফিরা মনে করতেন এক মুহূর্তের জন্যও ঈশ্বরের কথা ভোলা উচিত নয়। তাই ঈশ্বরের নামগান করে সংগীত ও নৃত্য করার এই প্রথাকে তাঁরা সমা (sama) বলতেন।'},
+      {q: 'সুফিবাদে গুরুর স্থান খুব উঁচুতে। সুফি গুরু বা শিক্ষককে কী বলা হয়?', opts: ['কাজি বা মুফতি', 'পির বা খাজা', 'উলেমা', 'খলিফা'], ans: 1, exp: 'হিন্দুধর্মের মতোই সুফিবাদেও গুরু-শিষ্য সম্পর্ক গুরুত্বপূর্ণ এবং গুরুকে পির বা খাজা বলা হয়।'},
+      {q: 'সুফিসাধকদের কর্মকেন্দ্র বা আশ্রমকে কী বলা হয়?', opts: ['মঠ', 'বিহার', 'দরগা বা খানকা', 'ইবাদতখানা'], ans: 2, exp: 'সুফি সাধকদের প্রচার কেন্দ্র এবং পিরদের কর্মকেন্দ্রকে দরগা বা খানকা বলা হয়।'},
+      {q: 'সুফি মতবাদে ঈশ্বরের সান্নিধ্য লাভের জন্য সাধকের কয়টি স্তর অতিক্রম করার কথা বলা হয়েছে?', opts: ['পাঁচটি', 'আটটি', 'দশটি', 'বারোটি'], ans: 2, exp: 'সুফি গুরুদের মতে, তওবা, ওয়ারা, ফকর, সবর, শুকর, খফ, রজা, তওয়াক্কুল, রিজা এবং জুহুদ— এই দশটি স্তর অতিক্রম করলে তবেই ঈশ্বরের সান্নিধ্য লাভ করা যায়।'},
+      {q: 'সুফি সাধনার দশটি স্তরের মধ্যে প্রথম স্তর তওবা বলতে কী বোঝায়?', opts: ['সহনশীলতা অর্জন', 'প্রায়শ্চিত্ত বা অনুশোচনা', 'পাপকে ভয় করা', 'ঈশ্বরে আত্মসমর্পণ'], ans: 1, exp: 'সুফি সাধনার প্রথম ধাপই হল নিজের কৃতকর্মের জন্য তওবা অর্থাৎ প্রায়শ্চিত্ত বা অনুশোচনা করা।'},
+      {q: 'সুফি সাধনায় ফকর স্তরটির অর্থ কী?', opts: ['আনন্দের সঙ্গে দারিদ্র্য বরণ', 'ভালোমন্দ হৃষ্টমনে গ্রহণ', 'লোভ ও তৃষ্ণা দমন', 'কৃতজ্ঞতা প্রদর্শন'], ans: 0, exp: 'ঈশ্বরের সাধনায় মগ্ন সুফিরা ফকর বা আনন্দের সঙ্গে দারিদ্র্য বরণ করে নিতেন, পার্থিব সম্পদের প্রতি তাঁদের কোনো মোহ ছিল না।'},
+      {q: 'গোঁড়া ইসলামীয় মতবাদ এবং সুফিবাদের মধ্যে একটি বড়ো পার্থক্য কী?', opts: ['গোঁড়া মুসলিমরা পির বা গুরুর প্রয়োজনীয়তা স্বীকার করেন, সুফিরা করেন না', 'সুফিরা সৃষ্টিকর্তা আল্লাহ এবং তাঁর সৃষ্ট মানুষকে পৃথক মনে করেন', 'গোঁড়া মুসলিমরা বাহ্যিক আচরণবিধি (নামাজ, হজ) পালনে জোর দেন, সুফিরা অন্তরের পবিত্রতায় জোর দেন', 'সুফিরা খানকা মানেন না'], ans: 2, exp: 'সুফিরা কোরানের মর্মবাণীকে গ্রহণ করে বাহ্যিক আচার-অনুষ্ঠানের পরিবর্তে অন্তরের পবিত্রতা, ত্যাগ ও বৈরাগ্যকে বেশি গুরুত্ব দেন।'},
+      {q: 'সুফিসাধকরা ভারতে আসা শুরু করেন কবে থেকে?', opts: ['খ্রিস্টীয় অষ্টম শতকে আরবদের সিন্ধু অভিযানের সময় থেকে', 'সুলতানি শাসনের প্রতিষ্ঠার পর', 'মুঘল যুগে', 'তৈমুর লঙের আক্রমণের সময়'], ans: 0, exp: 'অষ্টম শতকে আরবদের সিন্ধু বিজয়ের সময় থেকেই ইরাক, পারস্য ও মধ্য এশিয়া থেকে সুফিসাধকরা ভারতে প্রবেশ করতে শুরু করেন।'}
+    ]
+  },
+  6: {
+    name: 'Set 6',
+    icon: '🕌',
+    topic: 'চিশতি ও সুহরাবর্দি সিলসিলা',
+    questions: [
+      {q: 'যে সুফিরা শরিয়ত বা ইসলামীয় আইন মেনে চলতেন না এবং মুক্তভাবে নিজের অন্তরের প্রতি আস্থাবান ছিলেন, তাঁদের কী বলা হত?', opts: ['বা-শারা', 'বে-শারা', 'উলেমা', 'মুফতি'], ans: 1, exp: 'যাঁরা ইসলামীয় আইন বা শরিয়ত মেনে চলতেন তাঁরা বা-শারা এবং যাঁরা মানতেন না তাঁরা বে-শারা নামে পরিচিত ছিলেন।'},
+      {q: 'দ্বাদশ শতকে সুফিরা অন্তত কতগুলি সিলসিলা বা সম্প্রদায়ে বিভক্ত ছিলেন?', opts: ['আটটি', 'দশটি', 'চোদ্দোটি', 'কুড়িটি'], ans: 2, exp: 'দ্বাদশ শতকে সুফিরা অন্তত চোদ্দোটি সম্প্রদায় বা সিলসিলা-য় বিভক্ত ছিলেন, যার মধ্যে ভারতে চিশতি এবং সুহরাবর্দি সিলসিলা সবচেয়ে বিখ্যাত ছিল।'},
+      {q: 'ভারতে চিশতি সিলসিলা বা সম্প্রদায়ের প্রতিষ্ঠাতা কে ছিলেন?', opts: ['কুতুবউদ্দিন বখতিয়ার কাকি', 'খাজা মইনুদ্দিন চিশতি', 'নিজামউদ্দিন আউলিয়া', 'বাবা ফরিদ'], ans: 1, exp: '১১৯২ খ্রিস্টাব্দ নাগাদ ভারতে চিশতি সিলসিলার প্রতিষ্ঠা করেন খাজা মইনুদ্দিন চিশতি।'},
+      {q: 'কার স্মৃতিরক্ষার্থে দিল্লিতে বিখ্যাত কুতুবমিনার নির্মিত হয়েছিল?', opts: ['কুতুবউদ্দিন আইবকের', 'খাজা মইনুদ্দিন চিশতির', 'শেখ কুতুবউদ্দিন বখতিয়ার কাকি-র', 'নিজামউদ্দিন আউলিয়ার'], ans: 2, exp: 'ইলতুৎমিসের রাজত্বকালে ভারতে আসা বিখ্যাত সুফিসন্ত শেখ কুতুবউদ্দিন বখতিয়ার কাকির স্মৃতিরক্ষার্থেই কুতুবমিনার নির্মিত হয়েছিল।'},
+      {q: 'কোন্ চিশতি সাধকের উদার দৃষ্টিভঙ্গির জন্য পরবর্তীকালে শিখদের আদি গ্রন্থে তাঁর বহু পদ উদ্ধৃত হয়েছে?', opts: ['নিজামউদ্দিন আউলিয়া', 'ফরিদউদ্দিন-গঞ্জ-ই-শাকর (বাবা ফরিদ)', 'শেখ নাসিরউদ্দিন', 'খাজা বাকি বিল্লাহ'], ans: 1, exp: 'পাঞ্জাবি ভাষায় ধর্মপ্রচারক বাবা ফরিদ-এর হিন্দু ভক্তিবাদী সাধকদের সঙ্গে ঘনিষ্ঠ যোগাযোগ ছিল এবং তাঁর রচিত পদ শিখ ধর্মগ্রন্থেও স্থান পেয়েছে।'},
+      {q: 'সুলতান আলাউদ্দিন খলজি কাকে চিরাগ-ই-দিল্লি বা দিল্লির আলো উপাধিতে ভূষিত করেন?', opts: ['শেখ নাসিরউদ্দিন', 'বাবা ফরিদ', 'হজরত নিজামউদ্দিন আউলিয়া', 'শেখ জালালউদ্দিন তাব্রিজি'], ans: 2, exp: 'চিশতি সম্প্রদায়ের সর্বাপেক্ষা বিখ্যাত সন্ত হজরত নিজামউদ্দিন আউলিয়াকে আলাউদ্দিন খলজি তাঁর পাণ্ডিত্য ও জনপ্রিয়তার জন্য এই উপাধি দেন।'},
+      {q: 'বিখ্যাত কবি আমির খসরু এবং ঐতিহাসিক জিয়াউদ্দিন বারনি কার শিষ্য ছিলেন?', opts: ['খাজা মইনুদ্দিন চিশতি', 'শেখ শিহাবউদ্দিন সুহরাবর্দি', 'হজরত নিজামউদ্দিন আউলিয়া', 'খাজা বাকি বিল্লাহ'], ans: 2, exp: 'সুলতানি যুগে এই দুই প্রখ্যাত পণ্ডিত ও কবি ছিলেন নিজামউদ্দিন আউলিয়ার শিষ্য।'},
+      {q: '"দিল্লি হনুজ দূর অস্ত" (দিল্লি এখনও অনেক দূর)— এই বিখ্যাত উক্তিটি কে কার সম্পর্কে করেছিলেন?', opts: ['মইনুদ্দিন চিশতি, কুতুবউদ্দিন আইবক সম্পর্কে', 'নিজামউদ্দিন আউলিয়া, মহম্মদ-বিন-তুঘলক সম্পর্কে', 'বাবা ফরিদ, ইলতুৎমিস সম্পর্কে', 'আমির খসরু, আলাউদ্দিন খলজি সম্পর্কে'], ans: 1, exp: 'মহম্মদ-বিন-তুঘলক তাঁকে শাস্তি দেওয়ার হুমকি দিলে নিজামউদ্দিন এই ভবিষ্যদ্বাণী করেন।'},
+      {q: 'চিশতি সম্প্রদায়ের কোন্ সন্তের মৃত্যুর পর উত্তর ভারতে এই সম্প্রদায়ের আর তেমন কোনো প্রভাব দেখা যায়নি?', opts: ['খাজা মইনুদ্দিন চিশতি', 'বাবা ফরিদ', 'শেখ নাসিরউদ্দিন', 'খাজা বাকি বিল্লাহ'], ans: 2, exp: 'চিরাগ-ই-দিল্লি নামে পরিচিত শেখ নাসিরউদ্দিনের মৃত্যুর পর উত্তর ভারতে চিশতি সম্প্রদায়ের আর তেমন কোনো প্রভাব দেখা যায়নি।'},
+      {q: 'বাংলায় চিশতি ভাবধারার প্রসার কে ঘটিয়েছিলেন?', opts: ['শেখ জালালউদ্দিন তাব্রিজি', 'শেখ সিরাজউদ্দিন আখি-সিরাজ', 'নূর কুতুব আলম', 'মিয়াঁ মির'], ans: 1, exp: 'বাংলায় চিশতি সম্প্রদায়ের ভাবধারা ছড়িয়ে দেওয়ার মূল কৃতিত্ব শেখ সিরাজউদ্দিন আখি-সিরাজের।'},
+      {q: 'মুঘল সম্রাট আকবর চিশতি সম্প্রদায়ের কোন্ সন্তের গভীর অনুরাগী ছিলেন?', opts: ['নিজামউদ্দিন আউলিয়া', 'খাজা মইনুদ্দিন চিশতি', 'সেলিম চিশতি', 'বাবা ফরিদ'], ans: 2, exp: 'আকবর সুফিসন্ত সেলিম চিশতির এতটাই অনুরাগী ছিলেন যে তাঁর মরদেহ ফতেপুর সিক্রির জাম-ই-মসজিদে সমাহিত করে সেখানে অপূর্ব স্মৃতিসৌধ নির্মাণ করেছিলেন।'},
+      {q: 'সুহরাবর্দি সিলসিলা বা সম্প্রদায়ের প্রাণপুরুষ কে ছিলেন?', opts: ['শেখ শিহাবউদ্দিন সুহরাবর্দি', 'শেখ বাহাউদ্দিন জাকারিয়া', 'শাহ আবদুল্লা', 'শেখ বদরউদ্দিন'], ans: 0, exp: 'সুহরাবর্দি সম্প্রদায়ের প্রাণপুরুষ ছিলেন শেখ শিহাবউদ্দিন সুহরাবর্দি।'},
+      {q: 'সুহরাবর্দি সম্প্রদায়ের কোন্ সন্ত মুলতানে এই সম্প্রদায়ের খানকা স্থাপন করেন এবং নাসিরউদ্দিন কুবাচার বিরুদ্ধে ইলতুৎমিসের পক্ষ নেন?', opts: ['শেখ জালালউদ্দিন তাব্রিজি', 'শেখ বাহাউদ্দিন জাকারিয়া', 'রুকনউদ্দিন আবুল ফৎ', 'শাহ আবদুল্লা'], ans: 1, exp: 'বাগদাদ থেকে ফিরে শেখ বাহাউদ্দিন জাকারিয়া মুলতানে সুহরাবর্দি সম্প্রদায়ের খানকা স্থাপন করেন।'},
+      {q: 'কোন্ সুহরাবর্দি সাধক বাংলার লখনৌতি ও পাণ্ডুয়ায় খানকা প্রতিষ্ঠা করে বহু বাঙালি হিন্দুকে ইসলাম ধর্মে দীক্ষিত করেন?', opts: ['নূর কুতুব আলম', 'শেখ জালালউদ্দিন তাব্রিজি', 'শেখ সিরাজউদ্দিন আখি-সিরাজ', 'শেখ বদরউদ্দিন'], ans: 1, exp: 'সুহরাবর্দি সম্প্রদায়ের এই সন্ত ত্রয়োদশ শতকের শুরুতে বাংলায় এসে প্রচুর মানুষকে ইসলাম ধর্মে দীক্ষিত করেন।'},
+      {q: 'চিশতি ও সুহরাবর্দি সম্প্রদায়ের মধ্যে অন্যতম প্রধান পার্থক্য কী ছিল?', opts: ['চিশতিরা মূর্তিপূজা করতেন, সুহরাবর্দিরা করতেন না', 'চিশতিরা রাজনীতি ও শাসকদের থেকে দূরে থাকতেন, আর সুহরাবর্দিরা রাষ্ট্রের অধীনে উচ্চ রাজপদ গ্রহণ করতেন', 'চিশতিরা শুধুমাত্র আরবে সীমাবদ্ধ ছিলেন, সুহরাবর্দিরা ভারতে আসেন', 'চিশতিরা ইসলাম মানতেন না, সুহরাবর্দিরা মানতেন'], ans: 1, exp: 'চিশতিরা নির্জন স্থানে সাধারণ মানুষের সঙ্গে দরদ্রি জীবন কাটাতেন এবং রাজনীতি থেকে দূরে থাকতেন, অন্যদিকে সুহরাবর্দিরা বিলাসিতা ও রাজনীতির সাথে ঘনিষ্ঠভাবে যুক্ত ছিলেন।'}
+    ]
+  },
+  7: {
+    name: 'Set 7',
+    icon: '🌙',
+    topic: 'অন্যান্য সুফি সিলসিলা ও সুফিবাদের প্রভাব',
+    questions: [
+      {q: 'ভারতে কাদেরি সিলসিলা বা সম্প্রদায়ের প্রতিষ্ঠাতা কে ছিলেন?', opts: ['শেখ মুহিউদ্দিন আবদুল কাদির জিলানি', 'সৈয়দ মহম্মদ জিলানি', 'শেখ মির মহম্মদ বা মিয়াঁ মির', 'শাহ আবদুল্লা'], ans: 1, exp: 'কাদেরি সম্প্রদায়ের প্রবর্তক শেখ মুহিউদ্দিন হলেও, ভারতে এই সম্প্রদায়ের প্রতিষ্ঠাতা ছিলেন মুলতানের উচ অঞ্চলে বসবাসকারী সৈয়দ মহম্মদ জিলানি।'},
+      {q: 'লোদি বংশীয় শাসকদের আমলে ভারতে সাত্তারি সিলসিলা-র প্রতিষ্ঠা কে করেন?', opts: ['খাজা বাকি বিল্লাহ', 'শাহ আবদুল্লা', 'মহম্মদ গাউস', 'শেখ বদরউদ্দিন'], ans: 1, exp: 'লোদি যুগে ভারতে সাত্তারি সিলসিলার প্রতিষ্ঠাতা হলেন শাহ আবদুল্লা।'},
+      {q: 'প্রসিদ্ধ সংগীতজ্ঞ তানসেন এবং মুঘল সম্রাট হুমায়ুন কোন্ সুফি সম্প্রদায়ের প্রতি আকৃষ্ট ছিলেন?', opts: ['চিশতি সিলসিলা', 'সুহরাবর্দি সিলসিলা', 'সাত্তারি সিলসিলা', 'নক্শবন্দি সিলসিলা'], ans: 2, exp: 'তানসেন ও হুমায়ুন উভয়েই সাত্তারি সিলসিলার প্রতি আকৃষ্ট ছিলেন।'},
+      {q: 'সুফি মতবাদের ওপর রচিত জওহির-ই-খামস ও বাহর-ই-হায়াৎ গ্রন্থদুটির রচয়িতা কে?', opts: ['মহম্মদ গাউস', 'শাহ আবদুল্লা', 'আমির খসরু', 'নিজামউদ্দিন আউলিয়া'], ans: 0, exp: 'গোয়ালিয়রের বিখ্যাত সাত্তারি সন্ত মহম্মদ গাউস এই গ্রন্থদুটি রচনা করেন।'},
+      {q: 'ভারতে ফিরদৌসি সিলসিলা-র প্রধান কেন্দ্র কোথায় ছিল?', opts: ['দিল্লি', 'মুলতান', 'বিহার', 'কাশ্মীর'], ans: 2, exp: 'সমরখন্দের শেখ বদরউদ্দিন দিল্লিতে এটি শুরু করলেও পরবর্তীকালে বিহারই এই ফিরদৌসি সম্প্রদায়ের প্রধান কেন্দ্রে পরিণত হয়।'},
+      {q: 'মুঘল সম্রাট আকবরের আমলের শেষদিকে ভারতে নক্শবন্দি সিলসিলা-র প্রসার কে ঘটান?', opts: ['খাজা মহম্মদ বাহাউদ্দিন নক্শবন্দ', 'খাজা বাকি বিল্লাহ (বা মহম্মদ বাকি)', 'শেখ মির মহম্মদ', 'শেখ শরফউদ্দিন মানেরি'], ans: 1, exp: '১৫৬৪-১৬০৩ খ্রিস্টাব্দের মধ্যে খাজা বাকি বিল্লাহ ভারতে নক্শবন্দি সিলসিলার প্রসার ঘটান।'},
+      {q: 'কোন্ সুফি সিলসিলা ধর্মবিষয়ে নতুন কোনো নীতি গ্রহণের ঘোরতর বিরোধী ছিল এবং আকবরের উদার ধর্মমতকে গ্রহণ করেনি?', opts: ['চিশতি সিলসিলা', 'কাদেরি সিলসিলা', 'নক্শবন্দি সিলসিলা', 'সাত্তারি সিলসিলা'], ans: 2, exp: 'নক্শবন্দি সম্প্রদায় ইসলামের চিরাচরিত নিয়মনীতির প্রতি গভীরভাবে শ্রদ্ধাশীল ছিল এবং আকবরের উদার নীতিকে তারা সম্পূর্ণরূপে বর্জন করেছিল।'},
+      {q: 'কবি ও সংগীতজ্ঞ আমির খসরু চিশতি সমা বা গীতিনাট্যে যে নতুন ধরনের সংগীত প্রবর্তন করেন, তার নাম কী?', opts: ['গজল', 'তারানা', 'কৌল (বা কাওয়ালি)', 'দোঁহা'], ans: 2, exp: 'আমির খসরু চিশতি সমা-কে এক অনন্য রূপ দেন এবং কৌল (যাঁর অর্থ বাণী) নামক সংগীত প্রবর্তন করেন।'},
+      {q: 'অষ্টাদশ শতকের পর্যটক দরগাহ কুলি খান তাঁর মুরাক্কা-ই-দিল্লি গ্রন্থে কার দরগার বিস্তারিত বর্ণনা দিয়েছেন?', opts: ['নিজামউদ্দিন আউলিয়ার', 'নাসিরউদ্দিন চিরাগ-ই-দিল্লির', 'সেলিম চিশতির', 'খাজা মইনুদ্দিন চিশতির'], ans: 1, exp: 'দরগাহ কুলি খান তাঁর গ্রন্থে নাসিরউদ্দিন চিরাগ-ই-দিল্লির দরগার কথা বলেছেন।'},
+      {q: 'হিন্দু যোগসাধনার কোন্ গ্রন্থটি ফারসিতে অনূদিত হয়ে সুফিদের মধ্যে ব্যাপকভাবে প্রচারিত হয়েছিল?', opts: ['পাতঞ্জল যোগসূত্র', 'অমৃতকুণ্ড', 'হঠযোগ প্রদীপিকা', 'জ্ঞানেশ্বরী'], ans: 1, exp: 'হিন্দু যোগসাধনার অমৃতকুণ্ড নামক গ্রন্থটি ফারসিতে অনূদিত হওয়ায় হিন্দু যোগীদের অহিংসা, বৈরাগ্য ও প্রাণায়ামের মতো বিষয়গুলি সুফিদের প্রভাবিত করেছিল।'},
+      {q: 'সুফিবাদে জীবাত্মাকে পরমাত্মার অংশ বলে মনে করার বিশ্বাসকে কী বলা হয়, যার সঙ্গে উপনিষদের ধারণার মিল রয়েছে?', opts: ['ফকর', 'হুলুল', 'জিকির', 'তওবা'], ans: 1, exp: 'সুফিরা হুলুল-এ বিশ্বাসী ছিলেন, অর্থাৎ তাঁরা জীবাত্মাকে পরমাত্মার অংশ বলেই জানতেন।'},
+      {q: 'সুফিবাদের পতনের পিছনে কোন্ কারণটি অন্যতম ছিল?', opts: ['ভারতে ব্রিটিশদের আগমন', 'সুফিবাদে পাশ্চাত্য ধ্যানধারণার অনুপ্রবেশ এবং ওয়াহাবি, হানবালি ও শিয়া সম্প্রদায়ের বিরোধিতা', 'হিন্দু ধর্মের আগ্রাসন', 'বৌদ্ধধর্মের প্রসার'], ans: 1, exp: 'সুফিবাদে বাইরের প্রভাব আসা, সর্বখোদাবাদ সম্পর্কে সাধারণ মানুষের দুর্বোধ্যতা এবং গোঁড়া ওয়াহাবি, হানবালি ও শিয়াদের বিরোধিতার কারণে সুফিবাদের পতন ঘটে।'},
+      {q: 'সুফিসাধকদের ধর্মপ্রচারের ফলে ভারতে মূলত কোন্ ভাষার বিকাশ ঘটে?', opts: ['ইংরেজি', 'আঞ্চলিক ভাষা ও সাহিত্য (যেমন- হিন্দি, বাংলা, গুজরাটি ইত্যাদি)', 'শুধুমাত্র আরবি', 'ল্যাটিন'], ans: 1, exp: 'সুফিসাধকদের ধর্ম প্রচারের ফলে আঞ্চলিক ভাষা ও সাহিত্যের ব্যাপক প্রসার ঘটে।'},
+      {q: 'সুফিবাদের প্রভাবে অটোমান সাম্রাজ্যের কোন্ বিখ্যাত কবির উদ্ভব ঘটেছিল?', opts: ['আমির খসরু', 'শাইখ গালিব', 'মহম্মদ জয়সি', 'ইবন বতুতা'], ans: 1, exp: 'সুফিসাধকদের ধর্মপ্রচারের ফলে বিভিন্ন ভাষায় সাহিত্যের বিকাশ ঘটে এবং অটোমান কবিরূপে শাইখ গালিব বিখ্যাত হয়ে ওঠেন।'},
+      {q: 'খ্রিস্টীয় অষ্টম শতাব্দীর কোন্ দুজনকে প্রথম সুফি বলে মেনে নেওয়া হয়?', opts: ['বাবা ফরিদ ও নিজামউদ্দিন আউলিয়া', 'হাসান বসোরি এবং কুফার আবু হাশমি', 'আল-গাজ্জালি ও মনসুর অল হল্লাজ', 'শেখ শিহাবউদ্দিন ও বাহাউদ্দিন'], ans: 1, exp: 'খ্রিস্টীয় অষ্টম শতাব্দীর হাসান বসোরি এবং নবম শতাব্দীর কুফার আবু হাশমিকেই প্রথম সুফি বলে মেনে নেওয়া হয়।'}
+    ]
+  },
+  8: {
+    name: 'Set 8',
+    icon: '🤝',
+    topic: 'সামগ্রিক প্রভাব ও অন্যান্য গুরুত্বপূর্ণ তথ্য',
+    questions: [
+      {q: 'বারকরি সম্প্রদায়ের সন্তদের মধ্যে কে পেশায় একজন কুম্ভকার ছিলেন?', opts: ['সেনা', 'গোরা', 'চোখা', 'নরহরি'], ans: 1, exp: 'মহারাষ্ট্রের বারকরি সম্প্রদায়ের অনেক সন্তই নিম্ন বংশোদ্ভূত ছিলেন, যাঁদের মধ্যে গোরা ছিলেন কুম্ভকার।'},
+      {q: 'বারকরি সম্প্রদায়ের সন্তদের মধ্যে কে পেশায় তেলি ছিলেন?', opts: ['যোগা', 'নামদেব', 'চোখা', 'নরহরি'], ans: 0, exp: 'বারকরি সম্প্রদায়ের সন্তদের পেশা বিভিন্ন ছিল, তার মধ্যে যোগা ছিলেন পেশায় তেলি।'},
+      {q: 'মহারাষ্ট্রের কোন্ সাধক পিতৃপুরুষদের উদ্দেশ্যে প্রদত্ত অন্ন পারিয়াদের বা অস্পৃশ্যদের দান করেছিলেন?', opts: ['তুকারাম', 'রামদাস স্বামী', 'একনাথ', 'জ্ঞানদেব'], ans: 2, exp: 'সাধক একনাথ জাতিভেদ মানতেন না এবং তিনি অস্পৃশ্য পারিয়াদের পিতৃপুরুষদের উদ্দেশ্যে প্রদত্ত অন্ন দান করে উদারতার দৃষ্টান্ত স্থাপন করেন।'},
+      {q: 'মহারাষ্ট্রের কোন্ সাধক হিন্দুধর্মের আচার-অনুষ্ঠান ও যাগযজ্ঞ থেকে সরে গিয়ে মূলত কীর্তন-এর ওপর সবচেয়ে বেশি গুরুত্ব আরোপ করেছিলেন?', opts: ['নামদেব', 'তুকারাম', 'একনাথ', 'চক্রধর স্বামী'], ans: 1, exp: 'চাষি পরিবারের সন্তান তুকারাম প্রথাগত আচার-আচরণ থেকে সরে এসে বিঠোবার প্রতি প্রেম ও ভক্তি এবং কীর্তনের ওপর খুবই গুরুত্ব দিতেন।'},
+      {q: 'মহানুভব সম্প্রদায়ের সাধনার পথ কী ছিল, যেখানে মদ্যপান ও মূর্তিপূজা কঠোরভাবে নিষিদ্ধ ছিল?', opts: ['যাগযজ্ঞ ও তীর্থযাত্রা', 'যোগসাধনা ও প্রাণায়াম', 'অহিংসা, ব্রহ্মচর্য, সন্ন্যাস ও ভক্তি', 'নামসংকীর্তন ও মাধুকরী'], ans: 2, exp: 'চক্রধর স্বামী প্রতিষ্ঠিত মহানুভব সম্প্রদায়ের সাধনার পথ ছিল অহিংসা, ব্রহ্মচর্য, সন্ন্যাস ও ভক্তি।'},
+      {q: '"ঈশ্বরোপলব্ধির সঙ্গে জাগতিক জ্ঞানচর্চাও সমানভাবে প্রয়োজন"—এই মতটি কোন্ মহারাষ্ট্রীয় সাধকের ছিল?', opts: ['রামদাস স্বামী বা সমর্থ রামদাস', 'একনাথ', 'তুকারাম', 'নামদেব'], ans: 0, exp: 'ধারকরি আন্দোলনের প্রতিষ্ঠাতা সমর্থ রামদাস নিরীশ্বরবাদীদের বিরোধিতা করার পাশাপাশি ঈশ্বরোপলব্ধির সঙ্গে জাগতিক জ্ঞানচর্চার পক্ষপাতী ছিলেন।'},
+      {q: 'কোন্ ঐতিহাসিকের মতে, মহারাষ্ট্রের ভক্তি আন্দোলনের ফলে সামাজিক উন্নতি ঘটেছিল এবং নারী সমাজ মর্যাদা লাভ করেছিল?', opts: ['ড. তারাচাঁদ', 'এম. জি. রানাডে', 'রোমিলা থাপার', 'ইউসুফ হোসেন'], ans: 1, exp: 'ঐতিহাসিক এম. জি. রানাডে ভক্তি আন্দোলনের সামাজিক প্রভাব মূল্যায়ন করতে গিয়ে এই মন্তব্যটি করেছিলেন।'},
+      {q: 'খাজা মইনুদ্দিন চিশতি হিন্দু বেদান্ত দর্শনের মতোই কোন্ মতবাদ প্রচার করতেন?', opts: ['দ্বৈতবাদ', 'বিশিষ্টাদ্বৈতবাদ', 'অদ্বৈতবাদ', 'হুলুল'], ans: 2, exp: 'তিনি হিন্দু সন্ন্যাসীর মতোই জীবনযাপন করতেন এবং বেদান্ত দর্শনের মতোই অদ্বৈতবাদ প্রচার করতেন।'},
+      {q: 'কোন্ চিশতি সাধক হিন্দুদের কাফের বলতে অস্বীকার করেন এবং নিরামিষ ভোজন করতেন?', opts: ['শেখ কুতুবউদ্দিন বখতিয়ার কাকি', 'বাবা ফরিদ', 'শেখ হামিদউদ্দিন নাগোরি', 'নিজামউদ্দিন আউলিয়া'], ans: 2, exp: 'খাজা মইনুদ্দিন চিশতির অন্যতম শিষ্য শেখ হামিদউদ্দিন নাগোরি রাজস্থানের নাগোরে অবস্থান করতেন এবং সব ধর্মের প্রতি শ্রদ্ধাশীল হয়ে নিরামিষ ভোজন করতেন।'},
+      {q: 'শেখ কুতুবউদ্দিন বখতিয়ার কাকি ভারতের বাইরে কোথায় জন্মগ্রহণ করেছিলেন?', opts: ['ফারগানার উচ নামক স্থানে', 'বাগদাদে', 'মক্কায়', 'সিস্তানে'], ans: 0, exp: 'কুতুবউদ্দিন বখতিয়ার কাকি ফারগানার উচ নামক স্থানে জন্মগ্রহণ করেন।'},
+      {q: 'কোন্ বিখ্যাত সুফিসাধক সমকালীন সাতজন সুলতানের দ্বারা আমন্ত্রিত হলেও কখনও রাজপ্রাসাদের ছায়া মাড়াননি?', opts: ['বাবা ফরিদ', 'খাজা মইনুদ্দিন চিশতি', 'হজরত নিজামউদ্দিন আউলিয়া', 'শেখ নাসিরউদ্দিন'], ans: 2, exp: 'কথিত আছে যে, তিনি সমকালীন সাতজন সুলতানের দ্বারা আমন্ত্রিত হলেও বিলাসিতা বা ক্ষমতার কেন্দ্র রাজপ্রাসাদ থেকে সর্বদাই শত হস্ত দূরে থাকতেন।'},
+      {q: 'সুহরাবর্দি সম্প্রদায়ের কোন্ সন্ত সুলতান আলাউদ্দিন ও তুঘলক সুলতানদের পৃষ্ঠপোষকতা লাভ করেছিলেন?', opts: ['রুকনউদ্দিন আবুল ফৎ', 'শেখ বাহাউদ্দিন জাকারিয়া', 'শেখ জালালউদ্দিন তাব্রিজি', 'শাহ আবদুল্লা'], ans: 0, exp: 'সুহরাবর্দি সম্প্রদায় রাজনীতির সাথে যুক্ত থাকত এবং এই সম্প্রদায়ের রুকনউদ্দিন আবুল ফৎ খলজি ও তুঘলক সুলতানদের যথেষ্ট পৃষ্ঠপোষকতা পেয়েছিলেন।'},
+      {q: 'কাদেরি সিলসিলার কোন্ সন্তের পুত্র আবুল কাদির রাজনৈতিক প্রভাব ও প্রচুর সম্পত্তির অধিকারী ছিলেন?', opts: ['শেখ মির মহম্মদ', 'খাজা বাকি বিল্লাহ', 'সৈয়দ মহম্মদ জিলানি', 'মহম্মদ গাউস'], ans: 2, exp: 'ভারতে কাদেরি সম্প্রদায়ের প্রতিষ্ঠাতা সৈয়দ মহম্মদ জিলানির মৃত্যুর পর তাঁর পুত্র আবুল কাদির বিপুল সম্পত্তি ও রাজনৈতিক প্রভাবের অধিকারী হন।'},
+      {q: 'সুফিবাদের প্রভাবে ইসলাম ধর্ম ও সংস্কৃতির ভারতীয়করণের ফলে খানকাগুলি কীসের কেন্দ্রে পরিণত হয়?', opts: ['সামরিক প্রশিক্ষণের কেন্দ্রে', 'ধর্মচর্চা, বিদ্যাচর্চা ও জ্ঞানান্বেষণের কেন্দ্রে', 'বাণিজ্যের কেন্দ্রে', 'চিকিৎসা কেন্দ্রে'], ans: 1, exp: 'সুফিসাধকদের প্রভাবে ভারতে খানকাগুলি কেবল আশ্রম না থেকে সেগুলি ধর্মচর্চা, বিদ্যাচর্চা ও জ্ঞানান্বেষণের প্রধান কেন্দ্রে পরিণত হয়েছিল।'},
+      {q: '"সুফিবাদ ইসলামিক বিশ্বাস ও অনুশীলনসমূহের একীকরণ ও প্রসারতাকে বোঝায়" — এই বিখ্যাত উক্তিটি কোন্ ঐতিহাসিকের?', opts: ['ইউসুফ হোসেন', 'উইলিয়াম চিটিক (William Chittick)', 'জ্যাকেরিয়া আনসারি', 'জেমস জোল'], ans: 1, exp: 'সুফিবাদের ব্যাপক প্রভাব ও ইসলামী সমাজ গঠনে এর অবদানের কথা মূল্যায়ন করতে গিয়ে ঐতিহাসিক William Chittick এই তাৎপর্যপূর্ণ মন্তব্যটি করেন।'}
+    ]
+  }
+};
+
+// ============================================================
+//  গ্লোবাল ভেরিয়েবল
+// ============================================================
+const LABELS = ['ক', 'খ', 'গ', 'ঘ'];
+let currentSetId = 1;
+let cur = 0, score = 0, wrong = 0, answered = false, timerInterval, timeLeft = 10 * 60;
+let userAnswers = [];
+let isLoggedIn = false;
+let currentUser = null;
+let pendingSetId = null;
+
+// ============================================================
+//  হাব পেজ বিল্ড
+// ============================================================
+function buildHub() {
+  const grid = document.getElementById('setGrid');
+  grid.innerHTML = '';
+  for (let i = 1; i <= TOTAL_SETS; i++) {
+    const set = allSets[i];
+    const card = document.createElement('div');
+    card.className = 'set-card';
+    card.innerHTML = `
+      <div class="icon">${set.icon}</div>
+      <div class="set-num">${set.name}</div>
+      <div class="set-title">${set.topic}</div>
+      <div class="set-meta"><span>১৫ প্রশ্ন</span><span>১০ মিনিট</span></div>
+    `;
+    card.onclick = () => selectSet(i);
+    grid.appendChild(card);
+  }
+}
+
+function showHub() {
+  document.getElementById('hubPage').classList.remove('hidden');
+  document.getElementById('testArea').classList.add('hidden');
+  document.getElementById('resultWrap').classList.remove('show');
+  document.getElementById('timerBox').classList.remove('danger');
+  clearInterval(timerInterval);
+  if (currentUser) {
+    document.getElementById('hubUserInfo').innerHTML = `👤 ${currentUser.username} — Test দিতে সেট সিলেক্ট করো।`;
+  } else {
+    document.getElementById('hubUserInfo').innerHTML = '';
+  }
+}
+
+function goToHub() {
+  document.getElementById('testArea').classList.add('hidden');
+  document.getElementById('resultWrap').classList.remove('show');
+  document.getElementById('hubPage').classList.remove('hidden');
+  document.getElementById('timerBox').classList.remove('danger');
+  clearInterval(timerInterval);
+  isLoggedIn = false;
+  currentUser = null;
+}
+
+// ============================================================
+//  সেট সিলেক্ট - সবসময় লগইন চেক
+// ============================================================
+function selectSet(id) {
+  currentSetId = id;
+  const set = allSets[id];
+  pendingSetId = id;
+  document.getElementById('loginSetName').textContent = `📚 ${set.name} — ${set.topic}`;
+  document.getElementById('loginOverlay').classList.add('active');
+  document.getElementById('loginUsername').value = '';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginError').style.display = 'none';
+  document.getElementById('limitInfo').style.display = 'none';
+  document.getElementById('loginBtn').disabled = false;
+  document.getElementById('loginUsername').focus();
+}
+
+// ============================================================
+//  লগইন ফাংশন
+// ============================================================
+function doLoginFromSet() {
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
+  const errorEl = document.getElementById('loginError');
+  const limitInfo = document.getElementById('limitInfo');
+  const loginBtn = document.getElementById('loginBtn');
+
+  if (!username || !password) {
+    errorEl.textContent = '❌ দয়া করে ইউজারনেম ও পাসওয়ার্ড দিন।';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const user = userData.find(u => u.username === username && u.password === password);
+  if (user) {
+    const setAttempts = user.attempts[currentSetId] || 0;
+    if (setAttempts >= MAX_ATTEMPTS) {
+      limitInfo.style.display = 'block';
+      document.getElementById('limitMsg').textContent = `আপনি এই অ্যাকাউন্ট দিয়ে ${allSets[currentSetId].name} এর সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন। আর Test দেওয়া সম্ভব নয়।`;
+      errorEl.style.display = 'none';
+      loginBtn.disabled = true;
+      return;
+    }
+    
+    isLoggedIn = true;
+    currentUser = user;
+    errorEl.style.display = 'none';
+    limitInfo.style.display = 'none';
+    loginBtn.disabled = false;
+    document.getElementById('loginOverlay').classList.remove('active');
+    
+    document.getElementById('hubUserInfo').innerHTML = `👤 ${currentUser.username} — Test দিতে সেট সিলেক্ট করো।`;
+    
+    startQuiz(currentSetId);
+  } else {
+    errorEl.textContent = '❌ ভুল ইউজারনেম বা পাসওয়ার্ড। আবার চেষ্টা করুন।';
+    errorEl.style.display = 'block';
+    limitInfo.style.display = 'none';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('loginPassword').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doLoginFromSet();
+  });
+  document.getElementById('loginUsername').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doLoginFromSet();
+  });
+  buildHub();
+  document.getElementById('hubPage').classList.remove('hidden');
+  document.getElementById('testArea').classList.add('hidden');
+  document.getElementById('resultWrap').classList.remove('show');
+});
+
+// ============================================================
+//  কুইজ ফাংশন
+// ============================================================
+function startQuiz(setId) {
+  if (!isLoggedIn || !currentUser) return;
+  
+  const setAttempts = currentUser.attempts[setId] || 0;
+  if (setAttempts >= MAX_ATTEMPTS) {
+    alert(`⚠️ আপনি এই সেটের সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন।`);
+    return;
+  }
+  
+  currentUser.attempts[setId] = (currentUser.attempts[setId] || 0) + 1;
+  
+  cur = 0; score = 0; wrong = 0; answered = false;
+  timeLeft = 10 * 60; userAnswers = [];
+  document.getElementById('hubPage').classList.add('hidden');
+  document.getElementById('resultWrap').classList.remove('show');
+  document.getElementById('testArea').classList.remove('hidden');
+  document.getElementById('timerBox').classList.remove('danger');
+  
+  const set = allSets[setId];
+  document.getElementById('testSetLabel').textContent = set.name;
+  document.getElementById('testSetName').textContent = 'শিক্ষাবিজ্ঞান';
+  document.getElementById('testTopic').textContent = set.topic;
+  
+  clearInterval(timerInterval);
+  timerInterval = setInterval(tick, 1000);
+  loadQ();
+}
+
+function tick() {
+  timeLeft--;
+  const m = Math.floor(timeLeft / 60);
+  const s = timeLeft % 60;
+  document.getElementById('timerDisplay').textContent = m + ':' + (s < 10 ? '0' : '') + s;
+  if (timeLeft <= 60) document.getElementById('timerBox').classList.add('danger');
+  if (timeLeft <= 0) { clearInterval(timerInterval); showResult(); }
+}
+
+function loadQ() {
+  answered = false;
+  const set = allSets[currentSetId];
+  const q = set.questions[cur];
+  document.getElementById('qNum').textContent = 'প্রশ্ন ' + (cur + 1) + ' / ' + set.questions.length;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('progressFill').style.width = ((cur + 1) / set.questions.length * 100) + '%';
+  document.getElementById('nextBtn').disabled = true;
+  document.getElementById('nextBtn').textContent = cur === set.questions.length - 1 ? 'ফলাফল দেখো' : 'পরবর্তী →';
+  document.getElementById('explanation').classList.remove('show');
+
+  const opts = document.getElementById('qOpts');
+  opts.innerHTML = '';
+  q.opts.forEach((o, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = '<div class="opt-circle">' + LABELS[i] + '</div><div class="opt-text">' + o + '</div>';
+    btn.onclick = () => answer(i);
+    opts.appendChild(btn);
+  });
+}
+
+function answer(i) {
+  if (answered) return;
+  answered = true;
+  const set = allSets[currentSetId];
+  const q = set.questions[cur];
+  userAnswers[cur] = i;
+  const btns = document.querySelectorAll('.opt');
+  btns.forEach(b => b.classList.add('disabled'));
+  btns[q.ans].classList.add('correct');
+  if (i !== q.ans) { btns[i].classList.add('wrong'); wrong++; }
+  else score++;
+  document.getElementById('scoreShow').textContent = 'সঠিক: ' + score + ' | ভুল: ' + wrong;
+  document.getElementById('explanationText').innerHTML = '<strong>ব্যাখ্যা:</strong> ' + q.exp;
+  document.getElementById('explanation').classList.add('show');
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQ() {
+  const set = allSets[currentSetId];
+  cur++;
+  if (cur >= set.questions.length) { clearInterval(timerInterval); showResult(); return; }
+  loadQ();
+}
+
+function showResult() {
+  document.getElementById('testArea').classList.add('hidden');
+  const rw = document.getElementById('resultWrap');
+  rw.classList.add('show');
+  const set = allSets[currentSetId];
+  const pct = Math.round(score / set.questions.length * 100);
+  document.getElementById('finalScore').textContent = score;
+  document.getElementById('rbCorrect').textContent = score;
+  document.getElementById('rbWrong').textContent = wrong;
+  document.getElementById('rbPct').textContent = pct + '%';
+  
+  const remaining = MAX_ATTEMPTS - (currentUser.attempts[currentSetId] || 0);
+  document.getElementById('attemptInfo').innerHTML = `👤 ${currentUser.username} — ${set.name}: বাকি আছে <strong>${remaining}</strong> বার Test দেওয়ার সুযোগ (সর্বোচ্চ ${MAX_ATTEMPTS} বার)`;
+  
+  const grades = [
+    [90, '🌟', 'অসাধারণ!'],
+    [70, '👍', 'খুব ভালো!'],
+    [50, '📚', 'ভালো চেষ্টা!'],
+    [0, '💪', 'চেষ্টা চালিয়ে যাও!']
+  ];
+  const g = grades.find(x => pct >= x[0]);
+  document.getElementById('resultIcon').textContent = g[1];
+  document.getElementById('resultGrade').textContent = g[2] + ' (' + set.topic + ')';
+}
+
+function showReview() {
+  document.getElementById('resultWrap').classList.remove('show');
+  document.getElementById('testArea').classList.remove('hidden');
+  cur = 0;
+  loadReview();
+}
+
+function loadReview() {
+  const set = allSets[currentSetId];
+  if (cur >= set.questions.length) { 
+    document.getElementById('testArea').classList.add('hidden'); 
+    document.getElementById('resultWrap').classList.add('show'); 
+    return; 
+  }
+  const q = set.questions[cur];
+  document.getElementById('qNum').textContent = 'Review — প্রশ্ন ' + (cur + 1) + ' / ' + set.questions.length;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('progressFill').style.width = ((cur + 1) / set.questions.length * 100) + '%';
+  document.getElementById('nextBtn').disabled = false;
+  document.getElementById('nextBtn').textContent = cur === set.questions.length - 1 ? 'শেষ করো' : 'পরবর্তী →';
+  document.getElementById('nextBtn').onclick = () => { cur++; loadReview(); };
+
+  const opts = document.getElementById('qOpts');
+  opts.innerHTML = '';
+  q.opts.forEach((o, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt disabled';
+    if (i === q.ans) btn.classList.add('correct');
+    else if (userAnswers[cur] === i) btn.classList.add('wrong');
+    btn.innerHTML = '<div class="opt-circle">' + LABELS[i] + '</div><div class="opt-text">' + o + '</div>';
+    opts.appendChild(btn);
+  });
+
+  document.getElementById('explanationText').innerHTML = '<strong>ব্যাখ্যা:</strong> ' + q.exp;
+  document.getElementById('explanation').classList.add('show');
+  document.getElementById('scoreShow').textContent = 'সবুজ = সঠিক উত্তর';
+}
+</script>
+
+</body>
+</html>
